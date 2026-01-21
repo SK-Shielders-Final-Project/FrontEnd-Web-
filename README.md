@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# ZDME-Front
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ZDME 프론트엔드 애플리케이션
 
-## Available Scripts
+[Create React App](https://github.com/facebook/create-react-app)을 사용하여 구축
 
-In the project directory, you can run:
 
-### `npm start`
+## 🚀 시작하기
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+이 가이드는 로컬 개발 환경에서 프로젝트를 설정하고 실행하는 방법을 안내합니다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+### ✅ 1. [Node.js](https://nodejs.org/)**v22** 버전 설치
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Windows 권장 설치 방법 (`nvm-windows`)**
 
-### `npm run build`
+1. [Node.js 공식 홈페이지](https://nodejs.org/en/download/releases)에서  `*.msi` 설치 파일을 받아 설치 파일을 다운로드하고 실행
+2. 관리자 권한으로 **PowerShell** 또는 **CMD**를 열고 다음 명령어를 입력하여 Node.js 버전 확인
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```shell
+   npm -v
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+> 또는, `nvm-windows` 설치 후 node.js 버전 관리 가능
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+### 💻 2. 프로젝트 설치
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+필요한 패키지를 설치합니다.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```powershell
+npm install
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### ▶️ 3. 개발 서버 실행
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+아래 명령어를 실행하여 개발 서버를 시작합니다.
 
-### Code Splitting
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+서버가 성공적으로 시작되면 자동으로 브라우저가 열리고 [http://localhost:3000](http://localhost:3000) 주소로 애플리케이션이 실행
