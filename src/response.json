@@ -1,0 +1,12 @@
+{
+	"user_id": 1,
+	"username": "홍길동",
+	"password": "hong1234",
+	"email": "hgd@gmail.com",
+	"phone": "01012341234",
+	"card_number": "1234123412341234",
+	"admin_lev": 0,
+	"point": 0,
+	"created_at": "2026-01-20 10:30:00",
+	"updated_at": null
+}
