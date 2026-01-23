@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import config from './config/config.json';
 import mockUser from './response.json';
-import LoginPage from './LoginPage';
-import PaymentPage from './PaymentPage';
-import InquiryPage from './InquiryPage';
+import LoginPage from './login/LoginPage';
+import PaymentPage from './payment/PaymentPage';
+import InquiryPage from './inquiry/InquiryPage';
 import { BrowserRouter } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import { Routes } from 'react-router-dom';
 import MainPage from './MainPage';
 import Layout from './Layout';
+import ChargePointPage from './payment/ChargePointPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -48,7 +49,7 @@ function App() {
           <Route path="login" element={<LoginPage />} /> 
           <Route path="payment" element={<PaymentPage />} /> 
           <Route path="inquiry" element={<InquiryPage />} /> 
-          
+          <Route path="payment/charge" element={<ChargePointPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

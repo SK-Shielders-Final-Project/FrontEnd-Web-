@@ -1,3 +1,4 @@
 {
-    "server_url": "http://localhost:8080"
+    "server_url": "http://localhost:8080",
+    "toss_client_key": "test_ck_Z61JOxRQVEbdWBmdjAq0rW0X9bAq"
 }
