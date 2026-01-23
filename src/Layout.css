@@ -1,0 +1,41 @@
+/* 전체 헤더 틀 */
+.header {
+  display: flex;             /* 가로 배치 시작 */
+  justify-content: space-between; /* ★핵심: 자식 요소들을 양 끝으로 벌림 */
+  align-items: center;       /* 세로 중앙 정렬 */
+  
+  height: 60px;              /* 헤더 높이 */
+  padding: 0 20px;           /* 좌우 여백 */
+  background-color: #333;    /* 배경색 (검정) */
+  color: white;              /* 글자색 (흰색) */
+  
+  /* (선택) 스크롤 해도 상단에 고정하고 싶다면 아래 주석 해제 */
+  /* position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box; */
+}
+
+/* 로고 스타일 */
+.logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+/* 메뉴 리스트 (우측) */
+.nav-menu {
+  display: flex; /* 메뉴 아이템들도 가로로 배치 */
+  gap: 20px;     /* 메뉴 사이사이 간격 20px */
+}
+
+/* 각 메뉴 아이템 스타일 */
+.nav-item {
+  color: #ccc;
+  text-decoration: none; /* 밑줄 제거 */
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+/* 마우스 올렸을 때 효과 */
+.nav-item:hover {
+  color: white; 
+}
