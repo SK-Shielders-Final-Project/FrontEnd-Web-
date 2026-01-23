@@ -9,7 +9,7 @@ const Layout = () => {
         
         {/* 왼쪽: 로고 (필요 없다면 지워도 됩니다) */}
         <div className="logo">
-          <Link to="/">MY APP</Link>
+          <Link to="/">작당모빌</Link>
         </div>
 
         {/* 오른쪽: 메뉴 리스트 */}

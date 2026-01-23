@@ -6,9 +6,10 @@
   
   height: 60px;              /* 헤더 높이 */
   padding: 0 20px;           /* 좌우 여백 */
-  background-color: #333;    /* 배경색 (검정) */
-  color: white;              /* 글자색 (흰색) */
+  background-color: white;    /* 배경색 (검정) */
+  color: black;              /* 글자색 (흰색) */
   
+  border-bottom: 1px solid #ddd;
   /* (선택) 스크롤 해도 상단에 고정하고 싶다면 아래 주석 해제 */
   /* position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box; */
 }
@@ -17,7 +18,7 @@
 .logo a {
   font-size: 1.5rem;
   font-weight: bold;
-  color: white;
+  color: skyblue;
   text-decoration: none;
 }
 
@@ -29,7 +30,7 @@
 
 /* 각 메뉴 아이템 스타일 */
 .nav-item {
-  color: #ccc;
+  color: black;
   text-decoration: none; /* 밑줄 제거 */
   font-size: 1rem;
   transition: color 0.3s;
@@ -37,5 +38,5 @@
 
 /* 마우스 올렸을 때 효과 */
 .nav-item:hover {
-  color: white; 
+  color: gray; 
 }
