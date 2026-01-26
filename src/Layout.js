@@ -24,7 +24,7 @@ const Layout = () => {
           <Link to="/payment" className="nav-item">결제</Link>
           
           {/* path="inquiry" 과 연결 */}
-          <Link to="/inquiry" className="nav-item">조회</Link>
+          <Link to="/inquiry" className="nav-item">문의사항</Link>
         </nav>
 
       </header>
