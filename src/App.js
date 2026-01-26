@@ -11,6 +11,8 @@ import { Routes } from 'react-router-dom';
 import MainPage from './MainPage';
 import Layout from './Layout';
 import ChargePointPage from './payment/ChargePointPage';
+import SuccessPage from './payment/SuccessPage';
+import FailPage from './payment/FailPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -50,6 +52,8 @@ function App() {
           <Route path="payment" element={<PaymentPage />} /> 
           <Route path="inquiry" element={<InquiryPage />} /> 
           <Route path="payment/charge" element={<ChargePointPage />} />
+          <Route path="payment/success" element={<SuccessPage />} />
+          <Route path="payment/fail" element={<FailPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

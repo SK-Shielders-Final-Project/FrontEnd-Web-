@@ -23,8 +23,8 @@ const ChargePointPage = () => {
         orderId: `ORDER_${new Date().getTime()}`, // 주문 ID (유니크해야 함)
         orderName: `${amount} 포인트 충전`, // 주문명
         customerName: '홍길동', // (선택) 구매자 이름
-        successUrl: window.location.origin + '/success', // 성공 시 이동할 주소
-        failUrl: window.location.origin + '/fail',       // 실패 시 이동할 주소
+        successUrl: window.location.origin + '/payment/success', // 성공 시 이동할 주소
+        failUrl: window.location.origin + '/payment/fail',       // 실패 시 이동할 주소
       });
     } catch (error) {
       console.error("결제 실패:", error);
