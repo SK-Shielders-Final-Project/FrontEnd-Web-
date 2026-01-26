@@ -1,0 +1,162 @@
+/* RefundRequestPage.css */
+
+/* --- 전체 레이아웃 (컨테이너) --- */
+.history-container {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 0 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #fff;
+}
+
+/* 제목 스타일 */
+.page-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* --- 환불 컨테이너 박스 --- */
+.refund-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* 안내 문구 */
+.refund-guide-text {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* --- 정보 요약 박스 --- */
+.refund-info-box {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border-left: 5px solid #d32f2f;
+}
+
+/* 정보 한 줄 (양끝 정렬 핵심) */
+.refund-row {
+  display: flex;             /* Flexbox 적용 */
+  justify-content: space-between; /* 양끝 정렬 */
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #333;
+}
+.refund-row:last-child {
+  margin-bottom: 0;
+}
+
+/* 강조 텍스트 색상 */
+.text-highlight {
+  color: #d32f2f;
+}
+
+/* --- 입력 폼 스타일 --- */
+.refund-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+/* 금액 입력 Wrapper */
+.refund-amount-wrapper {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.refund-input-amount {
+  flex: 1;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+}
+.refund-input-amount:focus {
+  border-color: #007bff;
+}
+
+/* 전액 버튼 */
+.btn-full-amount {
+  padding: 0 15px;
+  border-radius: 6px;
+  border: 1px solid #007bff;
+  background-color: #e3f2fd;
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-full-amount:hover {
+  background-color: #bbdefb;
+}
+
+/* 사유 입력창 */
+.refund-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: none;
+  font-family: inherit;
+  margin-bottom: 25px;
+  font-size: 15px;
+}
+.refund-textarea:focus {
+  outline: none;
+  border-color: #d32f2f;
+}
+
+/* --- 하단 버튼 그룹 --- */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-cancel {
+  flex: 1;
+  padding: 14px;
+  background-color: #9e9e9e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+.btn-cancel:hover {
+  background-color: #757575;
+}
+
+.btn-refund-action {
+  flex: 2;
+  padding: 14px;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+.btn-refund-action:hover {
+  background-color: #b71c1c;
+}

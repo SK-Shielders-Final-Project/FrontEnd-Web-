@@ -15,6 +15,7 @@ import SuccessPage from './payment/SuccessPage';
 import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
 import HistoryPage from './mypage/HistoryPage';
+import RefundRequestPage from './mypage/RefundRequestPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -58,6 +59,8 @@ function App() {
           <Route path="payment/fail" element={<FailPage />} />
           <Route path="payment/use" element={<UsePointPage />} />
           <Route path="history" element={<HistoryPage />} />
+          <Route path="refund" element={<RefundRequestPage />} />
+
         </Route>
       </Routes>
     </BrowserRouter>
