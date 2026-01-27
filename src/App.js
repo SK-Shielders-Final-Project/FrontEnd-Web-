@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import config from './config/config.json';
-import mockUser from './response.json';
+import { jwtDecode } from 'jwt-decode'; // Import the decoder
 import LoginPage from './login/LoginPage';
+import ProtectedRoute from './auth/ProtectedRoute';
 import PaymentPage from './payment/PaymentPage';
 import InquiryPage from './inquiry/InquiryPage';
-import { BrowserRouter } from 'react-router-dom';
-import { Route } from 'react-router-dom';
-import { Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MainPage from './MainPage';
 import Layout from './Layout';
 import ChargePointPage from './payment/ChargePointPage';
@@ -18,67 +16,71 @@ import HistoryPage from './mypage/HistoryPage';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // user인지 아닌지 확인
+  // This effect runs only once when the app first loads.
   useEffect(() => {
-    // In a real application, you would fetch the data.
-    // For now, we are just using the mock data.
-    const fetchUser = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
       try {
-        const response = await fetch(`/api/user/info/1`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        const decodedToken = jwtDecode(token);
+        // Check if the token is expired
+        if (decodedToken.exp * 1000 < Date.now()) {
+          localStorage.removeItem('token');
+          setUser(null);
+        } else {
+          // Token exists and is not expired
+          setUser({ loggedIn: true });
         }
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        setError(error.message);
-        // As a fallback, use the mock user data
-        setUser(mockUser);
+      } catch (e) {
+        // If token is malformed, remove it
+        localStorage.removeItem('token');
+        setUser(null);
       }
-    };
-    fetchUser();
-    // setUser(mockUser); // Directly using the mock user for this example
-  }, []);
+    } else {
+      setUser(null);
+    }
+    setLoading(false); // We are done checking, so set loading to false.
+  }, []); // Empty array, runs only once.
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setError(null);
+    window.location.href = '/login';
+  };
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* Layout 컴포넌트로 감쌉니다 */}
-        <Route path="/" element={<Layout />}>
-          
-          {/* Outlet 자리에 들어갈 페이지들 */}
+        <Route path="/" element={<Layout user={user} error={error} onLogout={handleLogout} />}>
           <Route index element={<MainPage />} />
-          <Route path="login" element={<LoginPage />} /> 
-          <Route path="payment" element={<PaymentPage />} /> 
-          <Route path="inquiry" element={<InquiryPage />} /> 
+          <Route path="login" element={<LoginPage />} />
+          <Route
+            path="payment"
+            element={
+              <ProtectedRoute user={user} loading={loading}>
+                <PaymentPage />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="history"
+            element={
+              <ProtectedRoute user={user} loading={loading}>
+                <HistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="inquiry" element={<InquiryPage />} />
           <Route path="payment/charge" element={<ChargePointPage />} />
           <Route path="payment/success" element={<SuccessPage />} />
           <Route path="payment/fail" element={<FailPage />} />
           <Route path="payment/use" element={<UsePointPage />} />
-          <Route path="history" element={<HistoryPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
-    // <div className="App">
-    //   <header className="App-header">
-    //     <h1>사용자 정보</h1>
-    //     {error && <p>Error: {error}</p>}
-    //     {user ? (
-    //       <div>
-    //         <p><strong>아이디:</strong> {user.username}</p>
-    //         <p><strong>이메일:</strong> {user.email}</p>
-    //         <p><strong>전화번호:</strong> {user.phone}</p>
-    //         <p><strong>카드 번호:</strong> {user.card_number}</p>
-    //         <p><strong>포인트:</strong> {user.point}</p>
-    //       </div>
-    //     ) : (
-    //       <p>사용자 정보를 불러오는 중...</p>
-    //     )}
-    //   </header>
-    // </div>
-
   );
 }
 
