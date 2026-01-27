@@ -3,13 +3,19 @@ import ChatbotButton from "./ChatbotButton";
 import ChatbotWindow from "./ChatbotWindow";
 import "./Chatbot.css";
 
-function ChatbotContainer({ user }) {   // ✅ props 받기
+function ChatbotContainer({ user }) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <ChatbotButton onClick={() => setOpen(true)} />
-      {open && <ChatbotWindow user={user} onClose={() => setOpen(false)} />} {/* ✅ user 전달 */}
+
+      {open && (
+        <ChatbotWindow
+          user={user}                       // ✅ 여기 핵심
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 }

@@ -20,13 +20,17 @@ import RefundRequestPage from './mypage/RefundRequestPage';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [error, setError] = useState(null);
+
+   // ✅ "강제 로그인"으로 사용할 DB 유저 ID
+  const FORCED_USER_ID = 2; // 원하는 유저 id로 바꿔도 됨
 
   // (임시) user 확인 로직
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`/api/user/info/1`);
+        const response = await fetch(`/api/user/info/${FORCED_USER_ID}`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setUser(data);

@@ -7,7 +7,19 @@ function ChatbotWindow({ user, onClose }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ user가 없을 때(아직 로딩중/로그인 안됨) 대비
+  const userId = user.user_id; // user가 없으면 undefined
+
   const sendMessage = async () => {
+    // ✅ 0) 로그인 정보 없으면 여기서 종료 (에러 방지)
+    if (!userId) {
+      setMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: "로그인 정보를 불러오는 중이거나 로그인 상태가 아닙니다." }
+      ]);
+      return;
+    }
+
     if (!input.trim() || loading) return;
 
     const userText = input;
@@ -16,29 +28,27 @@ function ChatbotWindow({ user, onClose }) {
     // 1) 사용자 메시지 먼저 화면에 추가
     setMessages((prev) => [...prev, { sender: "user", text: userText }]);
 
-    // 2) userId 결정 (네 user 응답 필드명에 맞춰 여기만 조정)
-    const userId = user.user_id;
-
     try {
       setLoading(true);
 
-      // 3) 백엔드 호출
+      // 2) 백엔드 호출
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: userId,
+          userId: userId,     // ✅ 여기서 userId는 이미 안전하게 확보됨
           message: userText
         })
       });
 
       if (!res.ok) {
-        throw new Error(`chat api failed: ${res.status}`);
+        const t = await res.text().catch(() => "");
+        throw new Error(`chat api failed: ${res.status} ${t}`);
       }
 
       const data = await res.json(); // { userId, assistantMessage, model }
 
-      // 4) 봇 응답 화면에 추가
+      // 3) 봇 응답 화면에 추가
       setMessages((prev) => [
         ...prev,
         { sender: "bot", text: data.assistantMessage || "(응답 없음)" }
@@ -74,10 +84,13 @@ function ChatbotWindow({ user, onClose }) {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="메시지를 입력하세요"
+          placeholder={userId ? "메시지를 입력하세요" : "로그인 후 이용 가능합니다"}
+          disabled={!userId || loading}  // ✅ 로그인 전/로딩 중 입력 막기
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
-        <button onClick={sendMessage} disabled={loading}>전송</button>
+        <button onClick={sendMessage} disabled={!userId || loading}>
+          전송
+        </button>
       </div>
     </div>
   );

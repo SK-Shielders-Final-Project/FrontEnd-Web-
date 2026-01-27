@@ -29,7 +29,7 @@ const Layout = ({ user }) => {   // ✅ user를 props로 받기
         <Outlet />
 
         {/* ✅ 로그인한 사용자만 챗봇 보이게 */}
-        {user && <ChatbotContainer user={user} />}
+        <ChatbotContainer user={user} />
       </main>
     </div>
   );
