@@ -50,7 +50,7 @@ const LoginPage = () => {
       <h2 className="login-header">로그인</h2>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="input-group">
-          <label htmlFor="username">아이디:</label>
+          <label htmlFor="username">아이디</label>
           <input
             type="text"
             id="username"
@@ -60,7 +60,7 @@ const LoginPage = () => {
           />
         </div>
         <div className="input-group">
-          <label htmlFor="password">비밀번호:</label>
+          <label htmlFor="password">비밀번호</label>
           <input
             type="password"
             id="password"
@@ -74,8 +74,10 @@ const LoginPage = () => {
           {isLoading ? '로그인 중...' : '로그인'}
         </button>
       </form>
-      <div className="signup-link" style={{ marginTop: '20px' }}>
-        <p>아직 회원이 아니신가요? <Link to="/signup">회원가입</Link></p>
+      <div className="sub-links">
+        <Link to="/signup">회원가입</Link>
+        <span>|</span>
+        <Link to="/password-reset-request">비밀번호 찾기</Link>
       </div>
     </div>
   );
