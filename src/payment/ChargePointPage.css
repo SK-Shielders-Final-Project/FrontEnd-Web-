@@ -35,7 +35,7 @@
 }
 
 .input-group input:focus {
-  border-color: skyblue;
+  border-color: #0094b2;
   outline: none;
 }
 
@@ -65,7 +65,7 @@
 }
 
 .summary-row .price {
-  color: #007bff; /* 파란색 강조 */
+  color: #0094b2; /* 파란색 강조 */
 }
 
 /* 결제 버튼 */
@@ -83,5 +83,5 @@
 }
 
 .pay-button:hover {
-  background-color: #00bfff; /* 조금 더 진한 하늘색 */
+  background-color: #0094b2; /* 조금 더 진한 하늘색 */
 }

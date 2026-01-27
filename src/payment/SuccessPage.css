@@ -80,7 +80,7 @@
 }
 
 .home-button:hover {
-  background-color: #00bfff; /* 마우스 올리면 진해짐 */
+  background-color: #0094b2; /* 마우스 올리면 진해짐 */
   transform: translateY(-2px); /* 살짝 떠오르는 효과 */
 }
 
@@ -94,7 +94,7 @@
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid skyblue;
+  border-top: 5px solid #0094b2;
   border-radius: 50%;
   margin: 0 auto 20px auto;
   animation: spin 1s linear infinite;

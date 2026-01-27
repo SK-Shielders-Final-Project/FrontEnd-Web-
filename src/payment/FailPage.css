@@ -68,7 +68,7 @@
 .retry-button {
   width: 100%;
   padding: 15px;
-  background-color: skyblue;
+  background-color: #0094b2;
   color: white;
   border: none;
   border-radius: 8px;
@@ -79,7 +79,7 @@
 }
 
 .retry-button:hover {
-  background-color: #00bfff; /* 마우스 올리면 진해짐 */
+  background-color: #0094b2; /* 마우스 올리면 진해짐 */
 }
 
 /* 홈으로 가기 버튼 (회색) */

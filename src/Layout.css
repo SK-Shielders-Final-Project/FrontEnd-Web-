@@ -14,10 +14,6 @@
   /* position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box; */
 }
 
-/* Layout.css */
-
-/* ... 다른 스타일들 ... */
-
 /* 로고 링크 스타일 */
 .logo-link {
   display: flex;
@@ -37,13 +33,13 @@
   font-size: 1.2rem;
   font-weight: bold;
   
-  color: skyblue; 
+  color: #0094b2; 
 }
 
 /* 방문 후에도 색상 유지 */
 .logo-link:visited .logo-text,
 .logo-link:active .logo-text {
-  color: #55b6f7;
+  color: #0094b2;
 }
 
 /* 메뉴 리스트 (우측) */
