@@ -14,6 +14,8 @@ import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
 import HistoryPage from './mypage/HistoryPage';
 import SignupPage from './signup/SignupPage';
+import RequestPasswordResetPage from './password-reset/RequestPasswordResetPage';
+import ResetPasswordPage from './password-reset/ResetPasswordPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -60,6 +62,8 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
+          <Route path="password-reset-request" element={<RequestPasswordResetPage />} />
+          <Route path="password-reset" element={<ResetPasswordPage />} />
           <Route
             path="payment"
             element={
