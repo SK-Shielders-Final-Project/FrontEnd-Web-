@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import api from '../api/axiosConfig';
 import './SuccessPage.css'; 
 
 const SuccessPage = () => {
@@ -21,26 +22,14 @@ const SuccessPage = () => {
 
     const confirmPayment = async () => {
       try {
-        const response = await fetch('/api/payments/user/confirm', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            paymentKey: paymentKey,
-            orderId: orderId,
-            amount: Number(amount),
-          }),
+        const response = await api.post('/api/payments/user/confirm', {
+          paymentKey: paymentKey,
+          orderId: orderId,
+          amount: Number(amount)
         });
 
-        if (!response.ok) {
-          throw new Error('결제 승인 처리에 실패했습니다.');
-        }
-
-        const data = await response.json();
+        const data = response.data;
         
-        // ★ [변경 2] 백엔드 응답(JSON)을 통째로 State에 저장
-        // (data 안에는 paymentId, userId, totalPoint 등이 들어있음)
         setResponseData(data); 
 
         setIsConfirmed(true); 

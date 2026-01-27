@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import UseSuccessPage from './UseSuccessPage'; // 파일 분리됨
 import UseFailPage from './UseFailPage';       // 파일 분리됨
 import './UsePointPage.css';
-import axios from 'axios'; 
+import api from '../api/axiosConfig';
 import { useNavigate } from 'react-router-dom'; 
 
 const UsePointPage = () => {
@@ -43,7 +43,7 @@ const UsePointPage = () => {
 
     try {
 
-      const response = await axios.post('/api/user/point', requestDto);
+      const response = await api.post('/api/user/point', requestDto);
       const result = response.data;
       
       setResponseData(result);

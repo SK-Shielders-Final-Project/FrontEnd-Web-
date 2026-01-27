@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosConfig';
 import './CouponPage.css'; // 스타일 공유
 
 const CouponPage = () => {
@@ -20,7 +20,7 @@ const CouponPage = () => {
 
     try {
       // API 호출 
-      const response = await axios.post('/api/coupon/redeem', { couponCode: couponCode });
+      const response = await api.post('/api/coupon/redeem', { couponCode: couponCode });
       const data = response.data;
 
       setResultData(data); 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosConfig';
 import './RefundRequestPage.css';
 
 const RefundRequestPage = () => {
@@ -61,7 +61,7 @@ const RefundRequestPage = () => {
     }
 
     try {
-      const response = await axios.post('/api/payments/admin/cancel', {
+      const response = await api.post('/api/payments/admin/cancel', {
         paymentKey: targetItem.paymentKey,
         cancelReason: reason,
         cancelAmount: amountNum

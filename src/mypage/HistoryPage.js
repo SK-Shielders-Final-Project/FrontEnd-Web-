@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import axios from 'axios';
 import './HistoryPage.css';
+import api from '../api/axiosConfig';
 
 const HistoryPage = () => {
   const navigate = useNavigate(); 
@@ -18,10 +18,10 @@ const HistoryPage = () => {
     setUsageList([]);
     try {
       if (activeTab === 'payment') {
-        const response = await axios.get('/api/payments/user');
+        const response = await api.get('/api/payments/user');
         setPaymentList(response.data);
       } else {
-        const response = await axios.get('/api/user/point');
+        const response = await api.get('/api/user/point');
         setUsageList(response.data);
       }
     } catch (error) {

@@ -5,7 +5,7 @@ import LoginPage from './login/LoginPage';
 import ProtectedRoute from './auth/ProtectedRoute';
 import PaymentPage from './payment/PaymentPage';
 import InquiryPage from './inquiry/InquiryPage';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import MainPage from './MainPage';
 import Layout from './Layout';
 import ChargePointPage from './payment/ChargePointPage';
@@ -80,9 +80,24 @@ function App() {
             path="payment"
             element={
               <ProtectedRoute user={user} loading={loading}>
-                <PaymentPage />
+                <Outlet />
               </ProtectedRoute>
             }
+          >
+            <Route index element={<PaymentPage />}/>
+            <Route path="charge" element={<ChargePointPage />} />
+            <Route path="success" element={<SuccessPage />} />
+            <Route path="fail" element={<FailPage />} />
+            <Route path="use" element={<UsePointPage />} />          
+            <Route path="coupon" element={<CouponPage />} />
+          </Route>
+          <Route
+            path="refund"
+            element={
+              <ProtectedRoute user={user} loading={loading}>
+                <RefundRequestPage />
+              </ProtectedRoute>
+              }
           />
            <Route
             path="history"
@@ -106,13 +121,7 @@ function App() {
             <Route path="change-password" element={<ChangePasswordPage />} />
           </Route>
           <Route path="inquiry" element={<InquiryPage />} />
-          <Route path="payment/charge" element={<ChargePointPage />} />
-          <Route path="payment/success" element={<SuccessPage />} />
-          <Route path="payment/fail" element={<FailPage />} />
-          <Route path="payment/use" element={<UsePointPage />} />          
-          <Route path="payment/coupon" element={<CouponPage />} />
-          <Route path="history" element={<HistoryPage />} />
-          <Route path="refund" element={<RefundRequestPage />} />
+          
         </Route>
       </Routes>
     </BrowserRouter>

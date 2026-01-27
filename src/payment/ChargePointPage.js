@@ -4,10 +4,9 @@ import './ChargePointPage.css';
 import config from '../config/config.json';
 
 const ChargePointPage = () => {
-  const [amount, setAmount] = useState(''); // 입력한 포인트 양
-
-  // 1. 토스 페이먼츠 클라이언트 키 (테스트용)
+  const [amount, setAmount] = useState('');
   const clientKey = config.toss_client_key;
+
   const handlePayment = async () => {
     if (!amount || amount < 100) {
       alert("최소 100원 이상 결제해야 합니다.");
@@ -20,11 +19,10 @@ const ChargePointPage = () => {
       // 2. 결제창 띄우기 (requestPayment)
       await tossPayments.requestPayment('카드', {
         amount: Number(amount), // 결제 금액
-        orderId: `ORDER_${new Date().getTime()}`, // 주문 ID (유니크해야 함)
+        orderId: `ORDER_${new Date().getTime()}`, 
         orderName: `${amount} 포인트 충전`, // 주문명
-        customerName: '홍길동', // (선택) 구매자 이름
-        successUrl: window.location.origin + '/payment/success', // 성공 시 이동할 주소
-        failUrl: window.location.origin + '/payment/fail',       // 실패 시 이동할 주소
+        successUrl: window.location.origin + '/payment/success', 
+        failUrl: window.location.origin + '/payment/fail',       
       });
     } catch (error) {
       console.error("결제 실패:", error);

@@ -24,14 +24,14 @@ const Layout = ({ user, error, onLogout }) => {
         </div>
 
         <nav className="nav-menu">
-          <Link to="/login" className="nav-item">로그인</Link>
-          <Link to="/payment" className="nav-item">결제</Link>
           
           {/* 로그인 상태에 따라 다른 메뉴를 보여줍니다 */}
           {user ? (
             <>
               <Link to="/mypage" className="nav-item">마이페이지</Link>
               <a href="#" onClick={onLogout} className="nav-item">로그아웃</a>
+              <Link to="/payment" className="nav-item">결제</Link>
+              <Link to="/history" className="nav-item">이용내역</Link>
             </>
           ) : (
             <>
@@ -39,7 +39,6 @@ const Layout = ({ user, error, onLogout }) => {
               <Link to="/signup" className="nav-item">회원가입</Link>
             </>
           )}
-          <Link to="/history" className="nav-item">이용내역</Link>
           <Link to="/inquiry" className="nav-item">문의사항</Link>
         </nav>
       </header>
