@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -34,8 +34,6 @@ const LoginPage = () => {
       if (token) {
         localStorage.setItem('token', token);
         console.log('Login successful, token stored.');
-        // Navigate to history and force a reload of the entire app.
-        // This will cause App.js's useEffect to run again and fetch the user.
         window.location.href = '/history';
       } else {
         throw new Error('로그인에 성공했지만 토큰을 받지 못했습니다.');
@@ -52,7 +50,7 @@ const LoginPage = () => {
       <h2 className="login-header">로그인</h2>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="input-group">
-          <label htmlFor="username">사용자 이름:</label>
+          <label htmlFor="username">아이디:</label>
           <input
             type="text"
             id="username"
@@ -76,6 +74,9 @@ const LoginPage = () => {
           {isLoading ? '로그인 중...' : '로그인'}
         </button>
       </form>
+      <div className="signup-link" style={{ marginTop: '20px' }}>
+        <p>아직 회원이 아니신가요? <Link to="/signup">회원가입</Link></p>
+      </div>
     </div>
   );
 };

@@ -13,6 +13,7 @@ import SuccessPage from './payment/SuccessPage';
 import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
 import HistoryPage from './mypage/HistoryPage';
+import SignupPage from './signup/SignupPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,14 +26,14 @@ function App() {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        // Check if the token is expired
-        if (decodedToken.exp * 1000 < Date.now()) {
-          localStorage.removeItem('token');
-          setUser(null);
-        } else {
-          // Token exists and is not expired
-          setUser({ loggedIn: true });
-        }
+                            // Check if the token is expired
+                            if (decodedToken.exp * 1000 < Date.now()) {
+                              localStorage.removeItem('token');
+                              setUser(null);
+                            } else {
+                              // Token exists and is not expired
+                              setUser({ loggedIn: true });
+                            }
       } catch (e) {
         // If token is malformed, remove it
         localStorage.removeItem('token');
@@ -54,9 +55,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Pass the error state to the Layout component */}
         <Route path="/" element={<Layout user={user} error={error} onLogout={handleLogout} />}>
           <Route index element={<MainPage />} />
           <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
           <Route
             path="payment"
             element={

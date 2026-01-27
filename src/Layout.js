@@ -27,7 +27,10 @@ const Layout = ({ user, error, onLogout }) => {
               <a href="#" onClick={onLogout} className="nav-item">로그아웃</a>
             </>
           ) : (
-            <Link to="/login" className="nav-item">로그인</Link>
+            <>
+              <Link to="/login" className="nav-item">로그인</Link>
+              <Link to="/signup" className="nav-item">회원가입</Link>
+            </>
           )}
           
           <Link to="/payment" className="nav-item">결제</Link>
