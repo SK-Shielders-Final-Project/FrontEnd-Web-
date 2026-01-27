@@ -1,34 +1,115 @@
 import React, { useState } from "react";
 
+/* ===============================
+   권한 매핑
+================================ */
+const ROLE_TO_LEVEL = {
+  USER: 0,
+  ADMIN: 1,
+  SUPER_ADMIN: 2,
+};
+
+const LEVEL_TO_ROLE = {
+  0: "USER",
+  1: "ADMIN",
+  2: "SUPER_ADMIN",
+};
+
+const ROLE_OPTIONS = ["USER", "ADMIN", "SUPER_ADMIN"];
+
+// 실제 API
+const API_UPDATE_ROLE = "/api/admin/staff";
+
+// 임시 관리자 ID (로그인 붙이면 교체)
+function getAdminId() {
+  return 1;
+}
+
 export default function MembersPage() {
-  // ✅ 더미 데이터 (나중에 API 붙이면 이 부분만 교체)
+  // ✅ 아직 목록 API 없으니 더미
   const [members, setMembers] = useState([
     { id: 1, email: "user1@test.com", role: "USER" },
     { id: 2, email: "admin1@test.com", role: "ADMIN" },
   ]);
 
-  // 드롭다운에서 선택 가능한 권한 목록
-  const ROLE_OPTIONS = ["USER", "ADMIN", "SUPER_ADMIN"];
+  const [savingId, setSavingId] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  function onChangeRole(memberId, nextRole) {
-    // (나중에 API 붙일 자리)
-    // 1) 서버에 PATCH/PUT 요청 보내고
-    // 2) 성공하면 setMembers로 반영
-    // 지금은 프론트 더미 상태만 변경
-    setMembers((prev) =>
-      prev.map((m) => (m.id === memberId ? { ...m, role: nextRole } : m))
+  async function onChangeRole(userId, nextRole) {
+    setError("");
+    setSuccess("");
+
+    const prev = members;
+
+    // 1️⃣ UI 먼저 변경 (낙관적 업데이트)
+    setMembers((list) =>
+      list.map((m) =>
+        m.id === userId ? { ...m, role: nextRole } : m
+      )
     );
+
+    setSavingId(userId);
+
+    try {
+      const body = {
+        user_id: userId,
+        admin_level: ROLE_TO_LEVEL[nextRole], // ✅ DTO에 맞춤
+      };
+
+      const res = await fetch(API_UPDATE_ROLE, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-ADMIN-ID": String(getAdminId()),
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        throw new Error(`권한 수정 실패 (HTTP ${res.status})`);
+      }
+
+      const data = await res.json();
+
+      // 🔁 서버 기준으로 다시 동기화
+      setMembers((list) =>
+        list.map((m) =>
+          m.id === data.user_id
+            ? { ...m, role: LEVEL_TO_ROLE[data.admin_level] }
+            : m
+        )
+      );
+
+      setSuccess("권한이 성공적으로 수정되었습니다.");
+    } catch (e) {
+      // 실패 시 롤백
+      setMembers(prev);
+      setError(e.message);
+    } finally {
+      setSavingId(null);
+    }
   }
 
   return React.createElement(
     "div",
     null,
     React.createElement("h3", null, "회원 정보 리스트 조회"),
-    React.createElement(
-      "p",
-      { style: { color: "#666" } },
-      "※ 지금은 더미 데이터입니다. 드롭다운으로 권한 변경 UI만 구현했습니다."
-    ),
+
+    error &&
+      React.createElement(
+        "div",
+        { style: { color: "crimson", marginBottom: 8 } },
+        error
+      ),
+
+    success &&
+      React.createElement(
+        "div",
+        { style: { color: "green", marginBottom: 8 } },
+        success
+      ),
+
     React.createElement(
       "table",
       { style: tableStyles.table },
@@ -38,10 +119,9 @@ export default function MembersPage() {
         React.createElement(
           "tr",
           null,
-          React.createElement("th", { style: tableStyles.th }, "ID"),
-          React.createElement("th", { style: tableStyles.th }, "EMAIL"),
-          React.createElement("th", { style: tableStyles.th }, "ROLE"),
-          React.createElement("th", { style: tableStyles.th }, "권한 수정")
+          ["ID", "EMAIL", "ROLE", "권한 수정"].map((h) =>
+            React.createElement("th", { key: h, style: tableStyles.th }, h)
+          )
         )
       ),
       React.createElement(
@@ -51,11 +131,9 @@ export default function MembersPage() {
           React.createElement(
             "tr",
             { key: m.id },
-            React.createElement("td", { style: tableStyles.td }, String(m.id)),
+            React.createElement("td", { style: tableStyles.td }, m.id),
             React.createElement("td", { style: tableStyles.td }, m.email),
-            // 현재 권한 표시는 남겨도 되고 빼도 됨 (지금은 남겨둠)
             React.createElement("td", { style: tableStyles.td }, m.role),
-            // ✅ 드롭다운으로 수정
             React.createElement(
               "td",
               { style: tableStyles.td },
@@ -63,46 +141,30 @@ export default function MembersPage() {
                 "select",
                 {
                   value: m.role,
-                  onChange: (e) => onChangeRole(m.id, e.target.value),
-                  style: tableStyles.select,
+                  disabled: savingId === m.id,
+                  onChange: (e) =>
+                    onChangeRole(m.id, e.target.value),
                 },
-                ROLE_OPTIONS.map((role) =>
-                  React.createElement("option", { key: role, value: role }, role)
+                ROLE_OPTIONS.map((r) =>
+                  React.createElement("option", { key: r, value: r }, r)
                 )
-              )
+              ),
+              savingId === m.id &&
+                React.createElement(
+                  "span",
+                  { style: { marginLeft: 8, fontSize: 12 } },
+                  "저장중..."
+                )
             )
           )
         )
       )
-    ),
-    React.createElement(
-      "div",
-      { style: { marginTop: 12, color: "#666" } },
-      "※ 나중에 백엔드 API 연결 시, onChangeRole()에서 서버 업데이트 후 성공하면 상태를 갱신하도록 바꾸면 됩니다."
     )
   );
 }
 
 const tableStyles = {
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    background: "#fff",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  th: {
-    borderBottom: "1px solid #ddd",
-    padding: 10,
-    textAlign: "left",
-    background: "#f5f5f5",
-  },
-  td: { borderBottom: "1px solid #eee", padding: 10 },
-  select: {
-    padding: "6px 8px",
-    borderRadius: 6,
-    border: "1px solid #ccc",
-    background: "#fff",
-    cursor: "pointer",
-  },
+  table: { width: "100%", borderCollapse: "collapse", background: "#fff" },
+  th: { padding: 10, background: "#f5f5f5", textAlign: "left" },
+  td: { padding: 10, borderBottom: "1px solid #eee" },
 };
