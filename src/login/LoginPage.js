@@ -37,7 +37,7 @@ const LoginPage = () => {
         localStorage.setItem('token', token);
         localStorage.setItem('userId', userId); // Store the user ID
         console.log('Login successful, token and userId stored.');
-        window.location.href = '/history';
+        window.location.href = '/mypage/view';
       } else {
         throw new Error('로그인에 성공했지만 토큰 또는 사용자 ID를 받지 못했습니다.');
       }

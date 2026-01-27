@@ -11,9 +11,6 @@ const MyPage = () => {
                     <li>
                         <NavLink to="/mypage/view">회원정보 조회</NavLink>
                     </li>
-                    <li>
-                        <NavLink to="/mypage/change-password">비밀번호 변경</NavLink>
-                    </li>
                 </ul>
             </aside>
             <main className="mypage-content">
