@@ -14,12 +14,36 @@
   /* position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box; */
 }
 
-/* 로고 스타일 */
-.logo a {
-  font-size: 1.5rem;
+/* Layout.css */
+
+/* ... 다른 스타일들 ... */
+
+/* 로고 링크 스타일 */
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;   /* 밑줄 제거 */
+  gap: 12px;               /* 간격 띄우기 */
+}
+
+.logo-img {
+  height: 50px;  /* 글자 크기와 비슷하게 맞춤 */
+  width: auto;   /* 비율 유지 */
+  object-fit: contain;
+}
+
+/* 로고 텍스트 스타일 */
+.logo-text {
+  font-size: 1.2rem;
   font-weight: bold;
-  color: skyblue;
-  text-decoration: none;
+  
+  color: skyblue; 
+}
+
+/* 방문 후에도 색상 유지 */
+.logo-link:visited .logo-text,
+.logo-link:active .logo-text {
+  color: #55b6f7;
 }
 
 /* 메뉴 리스트 (우측) */

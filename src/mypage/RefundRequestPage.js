@@ -33,7 +33,6 @@ const RefundRequestPage = () => {
     }
   };
 
-  // ★ [수정됨] 전액 버튼: 환불 가능 금액(remainAmount)을 입력
   const handleFullAmount = () => {
     // remainAmount가 없으면(undefined/null) 초기 결제 금액(amount)을 대신 사용 (안전장치)
     const maxRefundable = targetItem.remainAmount ?? targetItem.amount;
@@ -56,7 +55,6 @@ const RefundRequestPage = () => {
       return;
     }
 
-    // ★ [수정됨] 유효성 검사: 환불 가능 금액 초과 여부 확인
     if (amountNum > maxRefundable) {
       alert(`환불 가능 금액(${maxRefundable.toLocaleString()}원)을 초과할 수 없습니다.`);
       return;
@@ -101,7 +99,6 @@ const RefundRequestPage = () => {
             <span>{targetItem.amount.toLocaleString()} 원</span>
           </div>
           
-          {/* ★ [추가됨] 환불 가능 금액 표시 */}
           <div className="refund-row">
             <span>환불 가능 금액</span>
             <strong className="text-highlight">
