@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 /* ===============================
    권한 매핑
@@ -22,19 +22,39 @@ const API_UPDATE_ROLE = "/api/admin/staff";
 
 // 임시 관리자 ID (로그인 붙이면 교체)
 function getAdminId() {
-  return 1;
+  return 2;
 }
 
 export default function MembersPage() {
   // ✅ 아직 목록 API 없으니 더미
-  const [members, setMembers] = useState([
-    { id: 1, email: "user1@test.com", role: "USER" },
-    { id: 2, email: "admin1@test.com", role: "ADMIN" },
-  ]);
+  //const [members, setMembers] = useState([
+  //  { id: 1, email: "user1@test.com", role: "USER" },
+  //  { id: 2, email: "admin1@test.com", role: "ADMIN" },
+  //]);
+
+  const [members, setMembers] = useState([]);
 
   const [savingId, setSavingId] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+  const fetchMembers = async () => {
+    const res = await fetch("/api/admin/staff", {
+      headers: { "X-ADMIN-ID": "2" } // 임시로 슈퍼관리자 id
+    });
+    const data = await res.json();
+
+    setMembers(data.map(u => ({
+      id: u.user_id,
+      email: u.email,
+      role: LEVEL_TO_ROLE[u.admin_lev]
+    })));
+  };
+
+  fetchMembers();
+}, []);
+
 
   async function onChangeRole(userId, nextRole) {
     setError("");
