@@ -29,14 +29,17 @@ const LoginPage = () => {
       }
 
       const data = await response.json();
+      console.log('Login response data:', data); // Add for debugging
       const token = data.jwttoken;
+      const userId = data.userId; // Match the lowercase 'userid' from the response
 
-      if (token) {
+      if (token && userId) {
         localStorage.setItem('token', token);
-        console.log('Login successful, token stored.');
+        localStorage.setItem('userId', userId); // Store the user ID
+        console.log('Login successful, token and userId stored.');
         window.location.href = '/history';
       } else {
-        throw new Error('로그인에 성공했지만 토큰을 받지 못했습니다.');
+        throw new Error('로그인에 성공했지만 토큰 또는 사용자 ID를 받지 못했습니다.');
       }
     } catch (error) {
       setErrorMessage(error.message);

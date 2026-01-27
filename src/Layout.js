@@ -24,6 +24,7 @@ const Layout = ({ user, error, onLogout }) => {
           {/* 로그인 상태에 따라 다른 메뉴를 보여줍니다 */}
           {user ? (
             <>
+              <Link to="/mypage" className="nav-item">마이페이지</Link>
               <a href="#" onClick={onLogout} className="nav-item">로그아웃</a>
             </>
           ) : (

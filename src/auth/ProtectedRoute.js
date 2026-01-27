@@ -10,9 +10,16 @@ const ProtectedRoute = ({ user, loading, children }) => {
       return;
     }
 
-    // After loading is complete, if there is no user, show alert and redirect.
+    const isLoggingOut = localStorage.getItem('isLoggingOut');
+
+    // After loading is complete, if there is no user:
     if (!user) {
-      alert('로그인이 필요합니다.');
+      // If the user is actively logging out, suppress the alert.
+      if (isLoggingOut === 'true') {
+        localStorage.removeItem('isLoggingOut'); // Clear the flag
+      } else {
+        alert('로그인이 필요합니다.');
+      }
       navigate('/login');
     }
   }, [user, loading, navigate]);

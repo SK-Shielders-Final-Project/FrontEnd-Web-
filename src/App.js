@@ -5,7 +5,7 @@ import LoginPage from './login/LoginPage';
 import ProtectedRoute from './auth/ProtectedRoute';
 import PaymentPage from './payment/PaymentPage';
 import InquiryPage from './inquiry/InquiryPage';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import MainPage from './MainPage';
 import Layout from './Layout';
 import ChargePointPage from './payment/ChargePointPage';
@@ -16,6 +16,10 @@ import HistoryPage from './mypage/HistoryPage';
 import SignupPage from './signup/SignupPage';
 import RequestPasswordResetPage from './password-reset/RequestPasswordResetPage';
 import ResetPasswordPage from './password-reset/ResetPasswordPage';
+import MyPage from './mypage/MyPage';
+import ViewProfilePage from './mypage/ViewProfilePage';
+import EditProfilePage from './mypage/EditProfilePage';
+import ChangePasswordPage from './mypage/ChangePasswordPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -31,6 +35,7 @@ function App() {
                             // Check if the token is expired
                             if (decodedToken.exp * 1000 < Date.now()) {
                               localStorage.removeItem('token');
+                              localStorage.removeItem('userId'); // Also remove userId
                               setUser(null);
                             } else {
                               // Token exists and is not expired
@@ -39,16 +44,21 @@ function App() {
       } catch (e) {
         // If token is malformed, remove it
         localStorage.removeItem('token');
+        localStorage.removeItem('userId'); // Also remove userId
         setUser(null);
       }
     } else {
+      // Also clear userId if token doesn't exist, for safety
+      localStorage.removeItem('userId');
       setUser(null);
     }
     setLoading(false); // We are done checking, so set loading to false.
   }, []); // Empty array, runs only once.
 
   const handleLogout = () => {
+    localStorage.setItem('isLoggingOut', 'true'); // Set flag before logout
     localStorage.removeItem('token');
+    localStorage.removeItem('userId'); // Remove userId on logout
     setUser(null);
     setError(null);
     window.location.href = '/login';
@@ -80,6 +90,19 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route 
+            path="mypage"
+            element={
+              <ProtectedRoute user={user} loading={loading}>
+                <MyPage />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="view" replace />} />
+            <Route path="view" element={<ViewProfilePage />} />
+            <Route path="edit" element={<EditProfilePage />} />
+            <Route path="change-password" element={<ChangePasswordPage />} />
+          </Route>
           <Route path="inquiry" element={<InquiryPage />} />
           <Route path="payment/charge" element={<ChargePointPage />} />
           <Route path="payment/success" element={<SuccessPage />} />
