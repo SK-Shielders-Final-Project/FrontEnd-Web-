@@ -1,24 +1,43 @@
 import React, { useState } from "react";
-import { setAdminLoggedIn } from "../auth";
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage(props) {
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
-  const [err, setErr] = useState("");
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
-    setErr("");
+    setErrorMessage('');
+    setIsLoading(true);
 
-    // ✅ 여기서 백엔드 호출은 "나중에" 넣을 거라서,
-    // 지금은 더미로 admin/1234만 통과되게 해둠.
-    if (id !== "admin" || pw !== "1234") {
-      setErr("아이디/비밀번호가 올바르지 않습니다. (테스트: admin / 1234)");
-      return;
+    try {
+      const response = await fetch('/api/admin/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        if (data.jwttoken && data.userId) {
+          props.onLoginSuccess(data.jwttoken, data.userId);
+        } else {
+          setErrorMessage("로그인에 성공했지만 토큰 또는 관리자 ID를 받지 못했습니다.");
+        }
+      } else {
+        setErrorMessage(data.message || '로그인에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error("Admin login error:", error);
+      setErrorMessage("로그인 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setAdminLoggedIn(true);
-    props.onLoginSuccess();
   }
 
   return React.createElement(
@@ -30,25 +49,22 @@ export default function LoginPage(props) {
       { onSubmit, style: { display: "grid", gap: 10 } },
       React.createElement("input", {
         placeholder: "아이디",
-        value: id,
-        onChange: (e) => setId(e.target.value),
+        value: username,
+        onChange: (e) => setUsername(e.target.value),
         style: styles.input,
       }),
       React.createElement("input", {
         placeholder: "비밀번호",
         type: "password",
-        value: pw,
-        onChange: (e) => setPw(e.target.value),
+        value: password,
+        onChange: (e) => setPassword(e.target.value),
         style: styles.input,
       }),
-      err
-        ? React.createElement("div", { style: styles.err }, err)
+      errorMessage
+        ? React.createElement("div", { style: styles.err }, errorMessage)
         : null,
-      React.createElement("button", { type: "submit", style: styles.btn }, "로그인"),
-      React.createElement(
-        "div",
-        { style: styles.hint },
-        "테스트 계정: admin / 1234"
+      React.createElement("button", { type: "submit", style: styles.btn, disabled: isLoading },
+        isLoading ? '로그인 중...' : '로그인'
       )
     )
   );

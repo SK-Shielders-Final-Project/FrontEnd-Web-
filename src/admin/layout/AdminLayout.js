@@ -1,20 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import MembersPage from "../pages/MembersPage";
-import InquiriesPage from "../pages/InquiriesPage";
-import BikesPage from "../pages/BikesPage";
 import { adminLogout } from "../auth";
 
 export default function AdminLayout(props) {
-  const [page, setPage] = useState("MEMBERS");
-
-  function renderPage() {
-    if (page === "MEMBERS") return React.createElement(MembersPage);
-    if (page === "INQUIRIES") return React.createElement(InquiriesPage);
-    if (page === "BIKES") return React.createElement(BikesPage);
-    return React.createElement("div", null, "페이지 없음");
-  }
-
   function onLogout() {
     adminLogout();
     props.onLogout();
@@ -23,7 +12,7 @@ export default function AdminLayout(props) {
   return React.createElement(
     "div",
     { style: styles.wrap },
-    React.createElement(Sidebar, { page, setPage }),
+    React.createElement(Sidebar, {}), // Sidebar no longer controls page state directly
     React.createElement(
       "main",
       { style: styles.main },
@@ -37,7 +26,7 @@ export default function AdminLayout(props) {
           "로그아웃"
         )
       ),
-      React.createElement("div", { style: styles.content }, renderPage())
+      React.createElement("div", { style: styles.content }, <Outlet />) // Render nested routes here
     )
   );
 }
