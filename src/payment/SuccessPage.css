@@ -1,0 +1,113 @@
+/* SuccessPage.css */
+
+/* 전체 컨테이너: 화면 중앙에 카드 형태로 배치 */
+.success-container {
+  max-width: 500px;
+  margin: 60px auto;
+  padding: 40px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+  text-align: center;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 성공 아이콘 (체크 표시) */
+.success-icon {
+  font-size: 4rem;
+  color: #4CAF50; /* 성공을 의미하는 녹색 */
+  margin-bottom: 20px;
+  animation: popIn 0.5s ease-out; /* 뽕! 하고 나타나는 애니메이션 */
+}
+
+/* 제목 스타일 */
+.success-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* 설명 텍스트 */
+.success-message {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* 결제 정보 박스 (영수증 느낌) */
+.receipt-box {
+  background-color: #f8f9fa;
+  border: 1px dashed #ddd; /* 점선 테두리로 영수증 느낌 내기 */
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: #555;
+}
+
+.receipt-row.total {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.highlight {
+  color: skyblue; /* 메인 컬러 포인트 */
+}
+
+/* 홈으로 가기 버튼 */
+.home-button {
+  width: 100%;
+  padding: 15px;
+  background-color: skyblue;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.home-button:hover {
+  background-color: #0094b2; /* 마우스 올리면 진해짐 */
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+}
+
+/* 로딩 애니메이션 (빙글빙글) */
+.loading-container {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #0094b2;
+  border-radius: 50%;
+  margin: 0 auto 20px auto;
+  animation: spin 1s linear infinite;
+}
+
+/* 애니메이션 정의 */
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

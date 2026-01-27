@@ -1,0 +1,79 @@
+.mypage-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.mypage-header {
+    color: #0094B2; /* Darker blue for header */
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+.user-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #555;
+    width: 120px; /* Align labels */
+    flex-shrink: 0;
+}
+
+.info-value {
+    color: #333;
+    flex-grow: 1;
+}
+
+.mypage-loading,
+.mypage-error {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.1em;
+    color: #777;
+}
+
+.mypage-error {
+    color: #dc3545;
+}
+
+.mypage-actions {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3FC2EC; /* Primary element color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #0094B2; /* Darker accent color */
+}

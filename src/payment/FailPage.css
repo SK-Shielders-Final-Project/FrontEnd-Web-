@@ -1,0 +1,100 @@
+/* FailPage.css */
+
+/* 화면 전체를 감싸는 컨테이너 (중앙 정렬) */
+.fail-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background-color: #f9f9f9;
+}
+
+/* 흰색 카드 박스 */
+.fail-card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* 경고 아이콘 */
+.fail-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+
+/* 제목 (빨간색) */
+.fail-title {
+  color: #E53935;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* 에러 메시지 박스 */
+.error-box {
+  background-color: #ffebee; /* 연한 빨간 배경 */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.error-message {
+  color: #c62828;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.error-code {
+  color: #ef5350;
+  font-size: 13px;
+  margin-top: 5px;
+  margin: 0;
+}
+
+/* 버튼 그룹 */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 다시 시도 버튼 (메인 컬러) */
+.retry-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #0094b2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: #0094b2; /* 마우스 올리면 진해짐 */
+}
+
+/* 홈으로 가기 버튼 (회색) */
+.home-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.home-button:hover {
+  background-color: #d6d6d6;
+}

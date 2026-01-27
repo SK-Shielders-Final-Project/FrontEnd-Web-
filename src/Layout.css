@@ -1,0 +1,62 @@
+/* 전체 헤더 틀 */
+.header {
+  display: flex;             /* 가로 배치 시작 */
+  justify-content: space-between; /* ★핵심: 자식 요소들을 양 끝으로 벌림 */
+  align-items: center;       /* 세로 중앙 정렬 */
+  
+  height: 60px;              /* 헤더 높이 */
+  padding: 0 20px;           /* 좌우 여백 */
+  background-color: white;    /* 배경색 (검정) */
+  color: black;              /* 글자색 (흰색) */
+  
+  border-bottom: 1px solid #ddd;
+  /* (선택) 스크롤 해도 상단에 고정하고 싶다면 아래 주석 해제 */
+  /* position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box; */
+}
+
+/* 로고 링크 스타일 */
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;   /* 밑줄 제거 */
+  gap: 12px;               /* 간격 띄우기 */
+}
+
+.logo-img {
+  height: 50px;  /* 글자 크기와 비슷하게 맞춤 */
+  width: auto;   /* 비율 유지 */
+  object-fit: contain;
+}
+
+/* 로고 텍스트 스타일 */
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  
+  color: #0094b2; 
+}
+
+/* 방문 후에도 색상 유지 */
+.logo-link:visited .logo-text,
+.logo-link:active .logo-text {
+  color: #0094b2;
+}
+
+/* 메뉴 리스트 (우측) */
+.nav-menu {
+  display: flex; /* 메뉴 아이템들도 가로로 배치 */
+  gap: 20px;     /* 메뉴 사이사이 간격 20px */
+}
+
+/* 각 메뉴 아이템 스타일 */
+.nav-item {
+  color: black;
+  text-decoration: none; /* 밑줄 제거 */
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+/* 마우스 올렸을 때 효과 */
+.nav-item:hover {
+  color: gray; 
+}
