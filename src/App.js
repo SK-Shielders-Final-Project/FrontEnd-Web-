@@ -16,6 +16,7 @@ import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
 import HistoryPage from './mypage/HistoryPage';
 import RefundRequestPage from './mypage/RefundRequestPage';
+import CouponPage from './payment/CouponPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -57,7 +58,8 @@ function App() {
           <Route path="payment/charge" element={<ChargePointPage />} />
           <Route path="payment/success" element={<SuccessPage />} />
           <Route path="payment/fail" element={<FailPage />} />
-          <Route path="payment/use" element={<UsePointPage />} />
+          <Route path="payment/use" element={<UsePointPage />} />          
+          <Route path="payment/coupon" element={<CouponPage />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="refund" element={<RefundRequestPage />} />
 

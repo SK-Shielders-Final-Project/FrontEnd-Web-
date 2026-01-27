@@ -18,15 +18,15 @@ const PaymentPage = () => {
 
   // 4. 충전권 클릭 시 실행될 함수
   const handleChargeClick = () => {
-    console.log("충전하기 클릭됨!");
-    // 원하는 경로로 이동 (예: 결제 상세 페이지)
     navigate('/payment/charge'); 
   };
 
-  // 5. 일일권 클릭 시 실행될 함수 (필요하다면)
   const handleDailyClick = () => {
-    console.log("사용하기 클릭됨!");
     navigate('/payment/use');
+  };
+
+  const handleCouponClick = () => {
+    navigate('/payment/coupon');
   };
 
   return (
@@ -39,7 +39,7 @@ const PaymentPage = () => {
           title="충전하기"
           description="포인트를 충전할 수 있습니다."
           icon={<i className="fas fa-ticket-alt"></i>}
-          onClick={handleChargeClick} // ★ 함수 전달
+          onClick={handleChargeClick} 
         />
 
         {/* 두 번째 카드: 일일권 */}
@@ -47,8 +47,14 @@ const PaymentPage = () => {
           title="사용하기"
           description="포인트를 사용하여 자전거를 이용할 수 있습니다."
           icon={<i className="fas fa-stopwatch"></i>}
-          onClick={handleDailyClick} // ★ 함수 전달
+          onClick={handleDailyClick} 
         />
+      </div>
+
+      <div className="coupon-section">
+        <button className="btn-coupon" onClick={handleCouponClick}>
+          🎟️ 쿠폰 등록하고 포인트 받기
+        </button>
       </div>
     </div>
   );
