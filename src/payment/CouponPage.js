@@ -8,7 +8,7 @@ const CouponPage = () => {
   
   // 상태 관리
   const [couponCode, setCouponCode] = useState('');
-  const [resultData, setResultData] = useState(null); // 결과 데이터 저장 (성공 시)
+  const [resultData, setResultData] = useState(null); 
   const [errorMsg, setErrorMsg] = useState('');
 
   // 쿠폰 등록 핸들러

@@ -10,7 +10,7 @@ const Layout = () => {
         {/* 왼쪽: 로고 */}
         <div className="logo">
           <Link to="/" className='logo-link'>
-            <img src='/zdmb_logo.png' alt='작당모빌 로고' className='logo-img'/> 
+            <img src='/logo.png' alt='작당모빌 로고' className='logo-img'/> 
             <span className='logo-text'>작당모빌</span>
           </Link>
         </div>
