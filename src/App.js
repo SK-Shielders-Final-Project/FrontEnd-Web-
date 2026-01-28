@@ -65,15 +65,13 @@ function AppContent() {
         </Route>
 
         {/* Payment Routes */}
-        <Route path="payment" element={<PaymentPage />}>
-          <Route index element={<Navigate to="charge-point" replace />} />
-          <Route path="charge-point" element={<ChargePointPage />} />
+        <Route path="payment">
+          <Route index element={<PaymentPage />} />
+          <Route path="charge" element={<ChargePointPage />} />
           <Route path="coupon" element={<CouponPage />} />
           <Route path="success" element={<SuccessPage />} />
           <Route path="fail" element={<FailPage />} />
-          <Route path="use-point" element={<UsePointPage />} />
-          <Route path="use-success" element={<UseSuccessPage />} />
-          <Route path="use-fail" element={<UseFailPage />} />
+          <Route path="use" element={<UsePointPage />} />
         </Route>
 
         {/* Top-level History route as in Layout.js link */}
