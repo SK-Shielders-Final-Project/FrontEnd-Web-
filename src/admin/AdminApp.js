@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, Outlet, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import AdminLayout from "./layout/AdminLayout";
 import InquiriesPage from "./pages/InquiriesPage";
 import BikesPage from "./pages/BikesPage";
 import MembersPage from "./pages/MembersPage";
+import { logoutAdmin } from "../auth/authUtils";
 
 // Placeholder for DashboardPage if it doesn't exist yet
 const AdminDashboardPage = () => <div>관리자 대시보드</div>;
@@ -17,39 +18,26 @@ const ProtectedAdminRoute = ({ children }) => {
 export default function AdminApp() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(!!localStorage.getItem('adminToken'));
 
-  useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      setAdminLoggedIn(true);
-    } else {
-      setAdminLoggedIn(false);
-      // Optional: If you want to redirect to login if no token on initial load
-      // navigate('/admin', { replace: true });
-    }
-  }, []);
-
-  const handleAdminLoginSuccess = (token, userId) => {
+  const handleAdminLoginSuccess = (token, userId, refreshToken) => {
     localStorage.setItem('adminToken', token);
     localStorage.setItem('adminId', userId);
+    localStorage.setItem('adminRefreshToken', refreshToken);
     setAdminLoggedIn(true);
     navigate('/admin/dashboard');
   };
 
   const handleAdminLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminId');
-    setAdminLoggedIn(false);
-    navigate('/admin/login', { replace: true });
+    logoutAdmin();
+    setAdminLoggedIn(false); // State update after redirect helper is called
   };
 
   if (!adminLoggedIn) {
-    if (location.pathname === '/admin/login') {
-      return <LoginPage onLoginSuccess={handleAdminLoginSuccess} />;
-    }
-    return <Navigate to="/admin/login" replace />;
+    // Render LoginPage if not logged in, which handles its own logic
+    return <LoginPage onLoginSuccess={handleAdminLoginSuccess} />;
   }
+
 
   return (
     <Routes>
@@ -63,6 +51,8 @@ export default function AdminApp() {
         {/* Catch-all for any unmatched admin sub-routes, redirect to dashboard */}
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Route>
+       {/* Redirect non-matching /admin/* routes when logged in */}
+       <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
     </Routes>
   );
 }

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode'; // Assuming jwt-decode is installed
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { logoutUser } from '../../auth/authUtils';
 
 const AuthContext = createContext(null);
 
@@ -10,34 +10,33 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                if (decodedToken.exp * 1000 < Date.now()) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userId');
-                    setIsLoggedIn(false);
-                    setUserId(null);
-                } else {
-                    setIsLoggedIn(true);
-                    setUserId(localStorage.getItem('userId'));
-                }
-            } catch (e) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('userId');
-                setIsLoggedIn(false);
-                setUserId(null);
-            }
+        const storedUserId = localStorage.getItem('userId');
+        if (token && storedUserId) {
+            setIsLoggedIn(true);
+            setUserId(storedUserId);
         }
         setLoading(false);
     }, []);
 
+    const login = useCallback((token, refreshToken, id) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('userId', id);
+        setIsLoggedIn(true);
+        setUserId(id);
+    }, []);
+
+    const logout = useCallback(() => {
+        logoutUser();
+    }, []);
+
+
     const value = {
         isLoggedIn,
-        setIsLoggedIn,
         userId,
-        setUserId,
-        loading
+        loading,
+        login,
+        logout
     };
 
     return React.createElement(AuthContext.Provider, { value }, children);

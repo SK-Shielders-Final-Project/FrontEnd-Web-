@@ -1,5 +1,5 @@
 // src/admin/api/memberApi.js
-import apiClient from "./apiClient";
+import apiClient from "../../api/axiosConfig";
 
 /**
  * 백엔드가 내려주는 admin_level(0/1/2)을 ROLE 문자열로 바꿔서 프론트에서 쓰기 좋게 만드는 함수

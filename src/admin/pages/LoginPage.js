@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { loginAdmin } from "../api/authApi";
 
 export default function LoginPage(props) {
-  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -14,27 +13,16 @@ export default function LoginPage(props) {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/admin/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        if (data.jwttoken && data.userId) {
-          props.onLoginSuccess(data.jwttoken, data.userId);
-        } else {
-          setErrorMessage("로그인에 성공했지만 토큰 또는 관리자 ID를 받지 못했습니다.");
-        }
+      const data = await loginAdmin(username, password);
+      if (data.accessToken && data.userId && data.refreshToken) {
+        props.onLoginSuccess(data.accessToken, data.userId, data.refreshToken);
       } else {
-        setErrorMessage(data.message || '로그인에 실패했습니다.');
+        setErrorMessage("로그인에 성공했지만 토큰 또는 관리자 ID를 받지 못했습니다.");
       }
     } catch (error) {
       console.error("Admin login error:", error);
-      setErrorMessage("로그인 중 오류가 발생했습니다.");
+      const message = error.response?.data?.message || "로그인 중 오류가 발생했습니다.";
+      setErrorMessage(message);
     } finally {
       setIsLoading(false);
     }

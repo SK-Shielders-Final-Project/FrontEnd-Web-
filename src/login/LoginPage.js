@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../components/auth/AuthContext';
+import { loginUser } from '../api/authApi';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -8,6 +10,7 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -15,34 +18,20 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/user/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const data = await loginUser(username, password);
+      console.log('Login API response data:', data); // Add this line for debugging
+      const { accessToken, refreshToken, userId } = data;
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || '로그인에 실패했습니다.');
-      }
-
-      const data = await response.json();
-      console.log('Login response data:', data); // Add for debugging
-      const token = data.jwttoken;
-      const userId = data.userId; // Match the lowercase 'userid' from the response
-
-      if (token && userId) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('userId', userId); // Store the user ID
-        console.log('Login successful, token and userId stored.');
-        window.location.href = '/mypage/view';
+      if (accessToken && refreshToken && userId) {
+        login(accessToken, refreshToken, userId);
+        navigate('/mypage/view');
       } else {
         throw new Error('로그인에 성공했지만 토큰 또는 사용자 ID를 받지 못했습니다.');
       }
     } catch (error) {
-      setErrorMessage(error.message);
+      console.error("Login API call failed:", error); // Add this line
+      const message = error.response?.data?.message || error.message || '로그인에 실패했습니다.';
+      setErrorMessage(message);
     } finally {
       setIsLoading(false);
     }

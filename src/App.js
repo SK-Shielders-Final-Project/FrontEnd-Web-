@@ -32,19 +32,16 @@ import UseSuccessPage from './payment/UseSuccessPage';
 import UseFailPage from './payment/UseFailPage';
 
 function AppContent() {
-  const { isLoggedIn, userId, setIsLoggedIn, setUserId } = useAuth();
+  const { isLoggedIn, userId, logout } = useAuth();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const user = isLoggedIn ? { loggedIn: isLoggedIn, userId: userId } : null;
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    setIsLoggedIn(false);
-    setUserId(null);
-    setError(null);
-    navigate('/');
+    logout(); // Use the centralized logout function from AuthContext
+    setError(null); // Clear any local error state
+    // The logout() function already handles navigation to /login, so no need for navigate('/') here
   };
 
   return (
