@@ -36,9 +36,14 @@ export default function InquiriesPage() {
     setError(null);
     try {
       const data = await fetchAllInquiries(adminLevel, p);
-      setList(data.content ?? []);
-      setTotalPages(data.totalPages ?? 0);
-      setTotalElements(data.totalElements ?? 0);
+      console.log(data, typeof(data));
+      setList(data); // Assume data is directly the array of inquiries
+      // If pagination metadata (totalPages, totalElements, page) is truly NOT part of the 'data'
+      // object/array and the API is only returning the content array,
+      // then these lines below will still set them to their default (0 or 1).
+      // This is a symptom of API response structure mismatch.
+      setTotalPages(data.totalPages ?? 1);
+      setTotalElements(data.totalElements ?? (Array.isArray(data) ? data.length : 0));
       setPage(data.number ?? 0);
     } catch (e) {
       setError(e.response?.data?.message || e.message || "문의 목록을 불러오지 못했습니다.");
@@ -114,17 +119,17 @@ export default function InquiriesPage() {
     }
   };
 
-  const handleDownload = (item) => {
-    // filename 우선 사용, 없으면 file, image_url, file_id 순서
-    const filename = item?.filename || item?.file_name || item?.original_filename ||
-                     item?.file || item?.image_url || 
-                     (item?.file_id != null ? String(item.file_id) : "");
-    if (!filename) return;
-    downloadFile(filename, adminLevel).catch((e) =>
-      setError(e.message || "다운로드에 실패했습니다.")
-    );
-  };
-
+    const handleDownload = (item) => {
+      console.log("Download item:", item); // Added console.log
+      // filename 우선 사용, 없으면 file, image_url, file_id 순서
+      const filename = item?.filename || item?.file_name || item?.original_filename ||
+                       item?.file || item?.image_url ||
+                       (item?.file_id != null ? String(item.file_id) : "");
+      if (!filename) return;
+      downloadFile(filename, adminLevel).catch((e) =>
+        setError(e.message || "다운로드에 실패했습니다.")
+      );
+    };
   const hasFile = (item) =>
     (item?.file && String(item.file).trim()) ||
     (item?.image_url && String(item.image_url).trim()) ||
@@ -213,7 +218,7 @@ export default function InquiriesPage() {
               </div>
               {detail.content && /<[a-z][\s\S]*>/i.test(detail.content) ? (
                 <div
-                  className="admin-inquiries-detail-content admin-inquiries-detail-content-html"
+                  className="admin-inquiries-de1tail-content admin-inquiries-detail-content-html"
                   dangerouslySetInnerHTML={{ __html: detail.content }}
                 />
               ) : (
