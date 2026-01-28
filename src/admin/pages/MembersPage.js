@@ -1,24 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { fetchMembers, updateMemberRole } from "../api/memberApi";
 
-/* ===============================
-   권한 매핑
-================================ */
-const ROLE_TO_LEVEL = {
-  USER: 0,
-  ADMIN: 1,
-  SUPER_ADMIN: 2,
-};
-
-const LEVEL_TO_ROLE = {
-  0: "USER",
-  1: "ADMIN",
-  2: "SUPER_ADMIN",
-};
-
+// 드롭다운 옵션
 const ROLE_OPTIONS = ["USER", "ADMIN", "SUPER_ADMIN"];
-
-// 실제 API
-const API_UPDATE_ROLE = "/api/admin/staff";
 
 // 임시 관리자 ID (로그인 붙이면 교체)
 function getAdminId() {
@@ -26,86 +10,67 @@ function getAdminId() {
 }
 
 export default function MembersPage() {
-  // ✅ 아직 목록 API 없으니 더미
-  //const [members, setMembers] = useState([
-  //  { id: 1, email: "user1@test.com", role: "USER" },
-  //  { id: 2, email: "admin1@test.com", role: "ADMIN" },
-  //]);
-
   const [members, setMembers] = useState([]);
-
   const [savingId, setSavingId] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // ✅ 1) 회원 목록 불러오기 (memberApi.js 사용)
   useEffect(() => {
-  const fetchMembers = async () => {
-    const res = await fetch("/api/admin/staff", {
-      headers: { "X-ADMIN-ID": "2" } // 임시로 슈퍼관리자 id
-    });
-    const data = await res.json();
+    let alive = true;
 
-    setMembers(data.map(u => ({
-      id: u.user_id,
-      email: u.email,
-      role: LEVEL_TO_ROLE[u.admin_lev]
-    })));
-  };
+    async function run() {
+      try {
+        setError("");
+        const list = await fetchMembers(); // ✅ 여기서 API 호출
+        if (alive) setMembers(list);
+      } catch (e) {
+        console.error(e);
+        if (alive) {
+          setMembers([]);
+          setError("회원 목록 조회 실패");
+        }
+      }
+    }
 
-  fetchMembers();
-}, []);
+    run();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
-
+  // ✅ 2) 권한 수정 (memberApi.js 사용)
   async function onChangeRole(userId, nextRole) {
     setError("");
     setSuccess("");
 
+    // UI 낙관적 업데이트용: 이전 상태 백업
     const prev = members;
 
-    // 1️⃣ UI 먼저 변경 (낙관적 업데이트)
+    // ✅ 먼저 화면에서 바꿔보이게(낙관적 업데이트)
     setMembers((list) =>
-      list.map((m) =>
-        m.id === userId ? { ...m, role: nextRole } : m
-      )
+      list.map((m) => (m.id === userId ? { ...m, role: nextRole } : m))
     );
 
     setSavingId(userId);
 
     try {
-      const body = {
-        user_id: userId,
-        admin_level: ROLE_TO_LEVEL[nextRole], // ✅ DTO에 맞춤
-      };
+      // ✅ 여기서 result를 "정의"해서 result undefined 에러 해결
+      const result = await updateMemberRole(getAdminId(), userId, nextRole);
 
-      const res = await fetch(API_UPDATE_ROLE, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-ADMIN-ID": String(getAdminId()),
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        throw new Error(`권한 수정 실패 (HTTP ${res.status})`);
-      }
-
-      const data = await res.json();
-
-      // 🔁 서버 기준으로 다시 동기화
+      // ✅ 서버 응답 기준으로 동기화
       setMembers((list) =>
         list.map((m) =>
-          m.id === data.user_id
-            ? { ...m, role: LEVEL_TO_ROLE[data.admin_level] }
-            : m
+          m.id === result.user_id ? { ...m, role: result.role } : m
         )
       );
 
       setSuccess("권한이 성공적으로 수정되었습니다.");
     } catch (e) {
+      console.error(e);
       // 실패 시 롤백
       setMembers(prev);
-      setError(e.message);
+      setError(e?.message || "권한 수정 실패");
     } finally {
       setSavingId(null);
     }
@@ -151,9 +116,10 @@ export default function MembersPage() {
           React.createElement(
             "tr",
             { key: m.id },
-            React.createElement("td", { style: tableStyles.td }, m.id),
+            React.createElement("td", { style: tableStyles.td }, String(m.id)),
             React.createElement("td", { style: tableStyles.td }, m.email),
             React.createElement("td", { style: tableStyles.td }, m.role),
+
             React.createElement(
               "td",
               { style: tableStyles.td },
@@ -162,8 +128,7 @@ export default function MembersPage() {
                 {
                   value: m.role,
                   disabled: savingId === m.id,
-                  onChange: (e) =>
-                    onChangeRole(m.id, e.target.value),
+                  onChange: (e) => onChangeRole(m.id, e.target.value),
                 },
                 ROLE_OPTIONS.map((r) =>
                   React.createElement("option", { key: r, value: r }, r)
