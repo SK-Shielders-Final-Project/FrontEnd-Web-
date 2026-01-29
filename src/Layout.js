@@ -19,8 +19,7 @@ const Layout = ({ user, error, onLogout }) => {
         {/* 왼쪽: 로고 */}
         <div className="logo">
           <Link to="/" className='logo-link'>
-            <img src='/logo.png' alt='작당모빌 로고' className='logo-img'/> 
-            <span className='logo-text'>작당모빌</span>
+            <img src='/name-logo.png' alt='작당모빌 로고' className='logo-img'/> 
           </Link>
         </div>
 
