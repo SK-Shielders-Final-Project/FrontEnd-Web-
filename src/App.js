@@ -28,8 +28,7 @@ import CouponPage from './payment/CouponPage';
 import SuccessPage from './payment/SuccessPage';
 import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
-import UseSuccessPage from './payment/UseSuccessPage';
-import UseFailPage from './payment/UseFailPage';
+
 
 
 function AppContent() {
@@ -62,7 +61,6 @@ function AppContent() {
           <Route path="edit" element={<EditProfilePage />} />
           <Route path="change-password" element={<ChangePasswordPage />} />
           <Route path="history" element={<HistoryPage />} />
-          <Route path="refund-request" element={<RefundRequestPage />} />
         </Route>
 
         {/* Payment Routes */}
@@ -77,6 +75,7 @@ function AppContent() {
 
         {/* Top-level History route as in Layout.js link */}
         <Route path="history" element={<HistoryPage />} />
+        <Route path="refund" element={<RefundRequestPage />} />
 
         {/* Fallback for unmatched routes within the Layout */}
         <Route path="*" element={<Navigate to="/" replace />} />
