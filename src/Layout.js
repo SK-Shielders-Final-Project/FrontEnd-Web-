@@ -1,5 +1,6 @@
 import { Outlet, Link } from 'react-router-dom';
-import './Layout.css'; // 스타일 파일 임포트
+import './Layout.css';
+import ChatbotContainer from "./chatbot/ChatbotContainer";
 
 const Layout = ({ user, error, onLogout }) => {
   return (
@@ -46,6 +47,9 @@ const Layout = ({ user, error, onLogout }) => {
       {/* --- 본문 (Outlet) 영역 --- */}
       <main className="main-content">
         <Outlet />
+
+        {/* ✅ 로그인한 사용자만 챗봇 보이게 */}
+        <ChatbotContainer user={user} />
       </main>
     </div>
   );

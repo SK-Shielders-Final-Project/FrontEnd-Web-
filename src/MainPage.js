@@ -1,8 +1,11 @@
 import React from 'react';
 import './MainPage.css'; // 스타일 분리
+import ChatbotContainer from "./chatbot/ChatbotContainer";
+
 
 const MainPage = ({ user }) => {
   return (
+    
     <div className="main-container">
       {/* 1. 상단 배너 영역 (이미지 + 타이틀) */}
       <section className="hero-section">
@@ -56,6 +59,7 @@ const MainPage = ({ user }) => {
         )}
       </section>
     </div>
+    
   );
 };
 

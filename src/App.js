@@ -31,6 +31,7 @@ import UsePointPage from './payment/UsePointPage';
 import UseSuccessPage from './payment/UseSuccessPage';
 import UseFailPage from './payment/UseFailPage';
 
+
 function AppContent() {
   const { isLoggedIn, userId, logout } = useAuth();
   const [error, setError] = useState(null);
