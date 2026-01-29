@@ -14,13 +14,18 @@ apiClient.interceptors.request.use(
         return config;
     }
 
-    if (adminToken) {
-      config.headers['Authorization'] = `Bearer ${adminToken}`;
-      config.headers['X-Auth-Type'] = 'admin';
-    } else if (token) {
+    if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
       config.headers['X-Auth-Type'] = 'user';
+    } else if (adminToken) { // Only check for adminToken if no user token is present
+      config.headers['Authorization'] = `Bearer ${adminToken}`;
+      config.headers['X-Auth-Type'] = 'admin';
     }
+    // NOTE: This prioritizes user token if both user and admin tokens are present,
+    // as per user's request ("비교 우선순위?를 user 먼저로 바꿔주라").
+    // If different behavior is desired (e.g., admin token for admin paths),
+    // more sophisticated logic is required, possibly by checking config.url.
+
     return config;
   },
   (error) => {
