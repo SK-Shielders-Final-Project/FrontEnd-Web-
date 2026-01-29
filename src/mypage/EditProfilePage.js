@@ -81,12 +81,8 @@ const EditProfilePage = () => {
             navigate('/mypage/view');
         } catch (err) {
             console.error('Failed to update user info:', err);
-            // Assuming specific error messages from backend for incorrect password
-            if (err.response && err.response.status === 401) {
-                alert('비밀번호가 틀렸습니다.');
-            } else {
-                alert('정보 수정에 실패했습니다. 다시 시도해주세요.');
-            }
+            const errorMessage = err.response?.data?.error || err.message || '정보 수정에 실패했습니다. 다시 시도해주세요.';
+            alert(errorMessage);
         }
     };
 
