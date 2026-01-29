@@ -30,7 +30,8 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error("Login API call failed:", error); // Add this line
-      const message = error.response?.data?.message || error.message || '로그인에 실패했습니다.';
+      const message = error.response?.data?.error || error.message || '로그인에 실패했습니다.';
+      alert(message);
       setErrorMessage(message);
     } finally {
       setIsLoading(false);

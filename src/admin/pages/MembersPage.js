@@ -70,7 +70,9 @@ export default function MembersPage() {
       console.error(e);
       // 실패 시 롤백
       setMembers(prev);
-      setError(e?.message || "권한 수정 실패");
+      const errorMessage = e.response?.data?.error || e.message || "권한 수정 실패";
+      alert(errorMessage); // Display alert with the error message
+      setError(errorMessage);
     } finally {
       setSavingId(null);
     }

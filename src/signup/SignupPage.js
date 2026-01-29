@@ -35,7 +35,9 @@ const SignupPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || '회원가입에 실패했습니다.');
+        const errorMessage = errorData.error || '회원가입에 실패했습니다.';
+        alert(errorMessage);
+        throw new Error(errorMessage);
       }
 
       // Handle successful signup

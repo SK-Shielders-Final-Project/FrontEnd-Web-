@@ -9,7 +9,8 @@ apiClient.interceptors.request.use(
     const adminToken = localStorage.getItem('adminToken');
     const token = localStorage.getItem('token');
 
-    if (config.url === '/api/auth/refresh') {
+    const authEndpoints = ['/api/auth/refresh', '/api/user/auth/login', '/api/admin/auth/login', '/api/user/auth/signup'];
+    if (authEndpoints.includes(config.url)) {
         return config;
     }
 
