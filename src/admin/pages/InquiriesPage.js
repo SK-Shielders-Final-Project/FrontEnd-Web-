@@ -8,10 +8,12 @@ import {
 } from "../api/inquiryApi";
 import "./InquiriesPage.css";
 
+// 날짜 렌더링 형식 수정 (YYYY-MM-DD HH:mm:ss)
 const formatDate = (dateString) => {
   if (!dateString) return "-";
   const d = new Date(dateString);
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 };
 
 export default function InquiriesPage() {
@@ -34,12 +36,8 @@ export default function InquiriesPage() {
     setListLoading(true);
     try {
       const data = await fetchAllInquiries(adminLevel, p);
-      console.log(data, typeof(data));
-      setList(data); // Assume data is directly the array of inquiries
-      // If pagination metadata (totalPages, totalElements, page) is truly NOT part of the 'data'
-      // object/array and the API is only returning the content array,
-      // then these lines below will still set them to their default (0 or 1).
-      // This is a symptom of API response structure mismatch.
+      const content = Array.isArray(data) ? data : (data.content || []);
+      setList(content);
       setTotalPages(data.totalPages ?? 1);
       setTotalElements(data.totalElements ?? (Array.isArray(data) ? data.length : 0));
       setPage(data.number ?? 0);
@@ -114,19 +112,29 @@ export default function InquiriesPage() {
     }
   };
 
-    const handleDownload = (item) => {
-      console.log("Download item:", item); // Added console.log
-      // filename 우선 사용, 없으면 file, image_url, file_id 순서
-      const filename = item?.filename || item?.file_name || item?.original_filename ||
-                       item?.file || item?.image_url ||
-                       (item?.file_id != null ? String(item.file_id) : "");
-      if (!filename) return;
-      downloadFile(filename, adminLevel).catch((e) =>
-        alert(e.message || "다운로드에 실패했습니다.")
-      );
-    };
+  const handleDownload = (item) => {
+    let fileParam = "";
+    if (item?.path && item?.fileName) {
+        const ext = item.ext ? `.${item.ext}` : "";
+        fileParam = `${item.path}/${item.fileName}${ext}`;
+    } else {
+        fileParam = item?.file || item?.file_name || item?.original_filename || 
+                    item?.image_url || (item?.file_id != null ? String(item.file_id) : "");
+    }
+
+    if (!fileParam) {
+      alert("다운로드할 파일 정보가 없습니다.");
+      return;
+    }
+
+    downloadFile(fileParam, adminLevel).catch((e) =>
+      alert(e.message || "다운로드에 실패했습니다.")
+    );
+  };
+
   const hasFile = (item) =>
     (item?.file && String(item.file).trim()) ||
+    (item?.path && item?.fileName) ||
     (item?.image_url && String(item.image_url).trim()) ||
     (item?.file_id != null && item?.file_id !== "");
 
@@ -159,20 +167,11 @@ export default function InquiriesPage() {
                 >
                   <h4>{item.title || "(제목 없음)"}</h4>
                   <div className="admin-inquiry-card-meta">
-                    {formatDate(item.created_at)} · user_id: {item.user_id}
+                    {/* user_id로 렌더링 */}
+                    {formatDate(item.created_at)} · user_id: {item.user_id || "알 수 없음"}
                   </div>
                   {item.admin_reply && (
-                    <span style={{
-                      marginLeft: '8px',
-                      padding: '3px 8px',
-                      backgroundColor: '#28a745',
-                      color: 'white',
-                      borderRadius: '12px',
-                      fontSize: '12px',
-                      fontWeight: 'bold'
-                    }}>
-                      답변완료
-                    </span>
+                    <span className="reply-status-badge">답변완료</span>
                   )}
                 </div>
               ))
@@ -218,11 +217,12 @@ export default function InquiriesPage() {
               <div className="admin-inquiries-detail-meta">
                 작성일: {formatDate(detail.created_at)}
                 {detail.updated_at && ` · 수정일: ${formatDate(detail.updated_at)}`}
-                {" · "}user_id: {detail.user_id}
+                {/* 상세 영역도 user_id로 렌더링 */}
+                {" · "}user_id: {detail.user_id || "알 수 없음"}
               </div>
               {detail.content && /<[a-z][\s\S]*>/i.test(detail.content) ? (
                 <div
-                  className="admin-inquiries-de1tail-content admin-inquiries-detail-content-html"
+                  className="admin-inquiries-detail-content admin-inquiries-detail-content-html"
                   dangerouslySetInnerHTML={{ __html: detail.content }}
                 />
               ) : (
@@ -237,7 +237,7 @@ export default function InquiriesPage() {
                     type="button"
                     onClick={() => handleDownload(detail)}
                   >
-                    첨부파일 다운로드
+                    첨부파일 다운로드 ({detail.originalName || detail.original_filename || "파일"})
                   </button>
                 </div>
               )}
@@ -266,15 +266,6 @@ export default function InquiriesPage() {
                     type="submit"
                     className="inquiry-btn primary"
                     disabled={replySubmitting || !replyText.trim()}
-                    style={{
-                      padding: "10px 18px",
-                      border: "none",
-                      borderRadius: 8,
-                      background: "#0094B2",
-                      color: "#fff",
-                      cursor: "pointer",
-                      fontSize: 14,
-                    }}
                   >
                     {replySubmitting ? "등록 중..." : "답변 저장"}
                   </button>
@@ -286,15 +277,6 @@ export default function InquiriesPage() {
                   type="button"
                   className="inquiry-btn danger"
                   onClick={handleDelete}
-                  style={{
-                    padding: "10px 18px",
-                    border: "1px solid #ef5350",
-                    borderRadius: 8,
-                    background: "#fff",
-                    color: "#c62828",
-                    cursor: "pointer",
-                    fontSize: 14,
-                  }}
                 >
                   문의 삭제
                 </button>
