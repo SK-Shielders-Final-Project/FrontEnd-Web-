@@ -2,7 +2,7 @@ import apiClient from '../../api/axiosConfig';
 
 // Admin-specific API endpoints
 const API_ADMIN_LIST = '/api/admin/inquiry';
-const API_ADMIN_DETAIL = '/api/admin/inquiry'; // Assuming detail endpoint
+const API_ADMIN_DETAIL = '/api/admin/inquiry/detail'; // Admin detail endpoint
 const API_ADMIN_REPLY = API_ADMIN_LIST;
 const API_ADMIN_DELETE = '/api/admin/inquiry/delete';
 const API_ADMIN_DOWNLOAD = '/api/admin/files/download'; // Admin download endpoint
@@ -14,7 +14,8 @@ export async function fetchAllInquiries(adminLevel, page = 0, size = 10) {
 }
 
 export async function fetchInquiryDetail(adminLevel, inquiryId) {
-  const res = await apiClient.post(`${API_ADMIN_DETAIL}/${inquiryId}`, {
+  const res = await apiClient.post('/api/admin/inquiry/detail', {
+    inquiry_id: inquiryId,
     admin_level: adminLevel
   });
   return res.data;

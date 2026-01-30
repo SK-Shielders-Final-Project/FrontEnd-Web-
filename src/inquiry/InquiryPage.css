@@ -315,3 +315,88 @@
   margin-bottom: 16px;
   font-size: 14px;
 }
+
+/* 1. 에디터 전체 컨테이너 정렬 */
+.note-editor.note-frame {
+  border: 1px solid #ddd !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+  width: 100% !important; /* 부모 너비를 벗어나지 않도록 고정 */
+}
+
+/* 2. 툴바 영역 버튼 정렬 및 간격 교정 */
+.note-toolbar {
+  background: #f8f9fa !important;
+  border-bottom: 1px solid #ddd !important;
+  padding: 6px 10px !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 2px !important; /* 버튼 그룹 사이 간격 고정 */
+}
+
+/* 3. 툴바 내 버튼 그룹 삐뚤어짐 방지 */
+.note-btn-group {
+  margin: 2px !important;
+  display: inline-flex !important;
+  vertical-align: middle !important;
+}
+
+/* 4. 버튼 내부 아이콘 및 텍스트 정렬 */
+.note-btn {
+  height: 32px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  background: #fff !important;
+  border: 1px solid #dee2e6 !important;
+  color: #333 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important;
+}
+
+.note-btn:hover {
+  background-color: #e9ecef !important;
+}
+
+/* 5. 에디터 편집 영역 (내용 입력부) */
+.note-editable {
+  padding: 16px !important;
+  min-height: 250px !important; /* 가시성 확보 */
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  background-color: #fff !important;
+}
+
+/* 6. 드롭다운 메뉴 (폰트 크기, 스타일 등) 정렬 */
+.note-dropdown-menu {
+  min-width: 140px !important;
+  padding: 8px 0 !important;
+  z-index: 1060 !important;
+}
+
+/* 7. 에디터 하단 바 및 리사이즈 바 제거 (더 깔끔하게) */
+.note-statusbar {
+  display: none !important;
+}
+
+/* 8. placeholder(입력 안내) 위치 교정 */
+.note-placeholder {
+  padding: 16px !important;
+  font-size: 14px !important;
+  color: #adb5bd !important;
+}
+
+/* 9. 모바일 대응: 툴바가 너무 길어질 경우 대비 */
+@media (max-width: 768px) {
+  .note-toolbar {
+    padding: 4px !important;
+  }
+  .note-btn {
+    padding: 0 6px !important;
+    height: 28px !important;
+  }
+}

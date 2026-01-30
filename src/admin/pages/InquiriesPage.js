@@ -22,7 +22,6 @@ export default function InquiriesPage() {
   const [totalElements, setTotalElements] = useState(0);
   const [page, setPage] = useState(0);
   const [listLoading, setListLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const [selectedId, setSelectedId] = useState(null);
   const [detail, setDetail] = useState(null);
@@ -33,7 +32,6 @@ export default function InquiriesPage() {
 
   const loadList = useCallback(async (p) => {
     setListLoading(true);
-    setError(null);
     try {
       const data = await fetchAllInquiries(adminLevel, p);
       console.log(data, typeof(data));
@@ -46,7 +44,7 @@ export default function InquiriesPage() {
       setTotalElements(data.totalElements ?? (Array.isArray(data) ? data.length : 0));
       setPage(data.number ?? 0);
     } catch (e) {
-      setError(e.response?.data?.message || e.message || "문의 목록을 불러오지 못했습니다.");
+      alert(e.response?.data?.message || e.message || "문의 목록을 불러오지 못했습니다.");
       setList([]);
     } finally {
       setListLoading(false);
@@ -64,13 +62,12 @@ export default function InquiriesPage() {
         return;
       }
       setDetailLoading(true);
-      setError(null);
       try {
         const data = await fetchInquiryDetail(adminLevel, inquiryId);
         setDetail(data);
         setReplyText(data?.admin_reply ?? "");
       } catch (e) {
-        setError(e.response?.data?.message || e.message || "문의 상세를 불러오지 못했습니다.");
+        alert(e.response?.data?.message || e.message || "문의 상세를 불러오지 못했습니다.");
         setDetail(null);
       } finally {
         setDetailLoading(false);
@@ -92,13 +89,12 @@ export default function InquiriesPage() {
     e.preventDefault();
     if (!selectedId || !replyText.trim()) return;
     setReplySubmitting(true);
-    setError(null);
     try {
       await writeAdminReply(adminLevel, selectedId, replyText.trim());
       await loadDetail(selectedId);
       await loadList(page);
     } catch (e) {
-      setError(e.response?.data?.message || e.message || "답변 등록에 실패했습니다.");
+      alert(e.response?.data?.message || e.message || "답변 등록에 실패했습니다.");
     } finally {
       setReplySubmitting(false);
     }
@@ -107,7 +103,6 @@ export default function InquiriesPage() {
   const handleDelete = async () => {
     if (!selectedId) return;
     if (!window.confirm("이 문의를 삭제하시겠습니까?")) return;
-    setError(null);
     try {
       await deleteInquiry(adminLevel, selectedId);
       setSelectedId(null);
@@ -115,7 +110,7 @@ export default function InquiriesPage() {
       setPage(0);
       loadList(0);
     } catch (e) {
-      setError(e.response?.data?.message || e.message || "삭제에 실패했습니다.");
+      alert(e.response?.data?.message || e.message || "삭제에 실패했습니다.");
     }
   };
 
@@ -127,7 +122,7 @@ export default function InquiriesPage() {
                        (item?.file_id != null ? String(item.file_id) : "");
       if (!filename) return;
       downloadFile(filename, adminLevel).catch((e) =>
-        setError(e.message || "다운로드에 실패했습니다.")
+        alert(e.message || "다운로드에 실패했습니다.")
       );
     };
   const hasFile = (item) =>
@@ -138,7 +133,6 @@ export default function InquiriesPage() {
   return (
     <div className="admin-inquiries-page">
       <h2>문의 사항 전체 조회</h2>
-      {error && <div className="admin-inquiries-error">{error}</div>}
 
       <div className="admin-inquiries-grid">
         <div className="admin-inquiries-list">
@@ -168,7 +162,17 @@ export default function InquiriesPage() {
                     {formatDate(item.created_at)} · user_id: {item.user_id}
                   </div>
                   {item.admin_reply && (
-                    <div className="admin-inquiry-replied">답변 완료</div>
+                    <span style={{
+                      marginLeft: '8px',
+                      padding: '3px 8px',
+                      backgroundColor: '#28a745',
+                      color: 'white',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      fontWeight: 'bold'
+                    }}>
+                      답변완료
+                    </span>
                   )}
                 </div>
               ))
@@ -298,7 +302,7 @@ export default function InquiriesPage() {
             </>
           )}
 
-          {selectedId && !detailLoading && !detail && !error && (
+          {selectedId && !detailLoading && !detail && (
             <div className="admin-inquiries-empty">해당 문의를 불러올 수 없습니다.</div>
           )}
         </div>
