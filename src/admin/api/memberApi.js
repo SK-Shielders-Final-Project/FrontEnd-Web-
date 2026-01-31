@@ -37,7 +37,7 @@ export async function fetchMembers() {
       userName: u.user_name,     // Long user_name (DTO에 맞춰 추가)
       name: u.name,              // Long name (DTO에 맞춰 추가)
       phone: u.phone,            // Integer phone
-      cardNumber: u.card_number, // String card_number
+
       role: LEVEL_TO_ROLE[u.admin_level] ?? "USER",
       level: u.admin_level,      // 원본 레벨 값
       raw: u,                    // 원본 데이터 전체 (필요시 대비)
