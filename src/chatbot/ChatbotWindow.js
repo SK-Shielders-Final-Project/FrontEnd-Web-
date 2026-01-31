@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import apiClient from "../api/axiosConfig"; // ✅ apiClient import 경로 수정
 
 function ChatbotWindow({ user, onClose }) {
   const [messages, setMessages] = useState([
@@ -32,21 +33,13 @@ function ChatbotWindow({ user, onClose }) {
       setLoading(true);
 
       // 2) 백엔드 호출
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: userId,     // ✅ 여기서 userId는 이미 안전하게 확보됨
-          message: userText
-        })
+      const res = await apiClient.post("/api/chat", {
+        userId: userId, // userId 다시 포함 (백엔드 DTO가 요구할 수 있음)
+        message: { content: userText } // message를 객체 형태로 변경
       });
 
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(`chat api failed: ${res.status} ${t}`);
-      }
-
-      const data = await res.json(); // { userId, assistantMessage, model }
+      // axios는 res.data로 바로 데이터에 접근
+      const data = res.data; // { userId, assistantMessage, model }
 
       // 3) 봇 응답 화면에 추가
       setMessages((prev) => [
