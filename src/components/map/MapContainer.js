@@ -32,7 +32,11 @@ function MapContainer() {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlText, "application/xml");
       
-      const bikeNodes = xmlDoc.getElementsByTagName('bike');
+      // MapResponseDTO의 새로운 구조를 파싱
+      const exploitedLatNode = xmlDoc.getElementsByTagName('exploitedLatitude')[0];
+      const exploitedLatitude = exploitedLatNode ? exploitedLatNode.textContent : 'Not found';
+
+      const bikeNodes = xmlDoc.getElementsByTagName('bikes')[0].getElementsByTagName('bike'); // bikes 태그 아래 bike 태그
       const newBikes = Array.from(bikeNodes).map(node => ({
         id: node.getAttribute('id'),
         latitude: parseFloat(node.getElementsByTagName('latitude')[0].textContent),
@@ -40,11 +44,13 @@ function MapContainer() {
       }));
 
       setBikes(newBikes);
+      let alertMessage = `위치: ${exploitedLatitude}\n`;
       if (newBikes.length > 0) {
-        alert(`${newBikes.length}개의 자전거 정보를 DB에서 불러왔습니다.`);
+        alertMessage += `${newBikes.length}개의 자전거 정보를 DB에서 불러왔습니다.`;
       } else {
-        alert("주변에 자전거 정보가 없습니다.");
+        alertMessage += `주변에 자전거 정보가 없습니다.`;
       }
+      alert(alertMessage);
 
     } catch (error) {
       console.error('자전거 정보 로딩 중 에러 발생:', error);
