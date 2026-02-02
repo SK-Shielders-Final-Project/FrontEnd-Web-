@@ -6,7 +6,7 @@
   
   height: 60px;              /* 헤더 높이 */
   padding: 0 20px;           /* 좌우 여백 */
-  background-color: white;    /* 배경색 (검정) */
+  background-color: #FCFCFC;    /* 배경색 (검정) */
   color: black;              /* 글자색 (흰색) */
   
   border-bottom: 1px solid #ddd;
@@ -20,6 +20,10 @@
   align-items: center;
   text-decoration: none;   /* 밑줄 제거 */
   gap: 12px;               /* 간격 띄우기 */
+}
+
+.logo-link:hover {
+  text-decoration: none; /* 마우스 오버 시에도 밑줄 제거 */
 }
 
 .logo-img {

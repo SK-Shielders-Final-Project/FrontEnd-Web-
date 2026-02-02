@@ -2,9 +2,11 @@ import apiClient from './axiosConfig';
 
 const API_WRITE = '/api/user/inquiry/write';
 const API_LIST = '/api/user/inquiry';
+const API_DETAIL = '/api/user/inquiry'; // GET /api/user/inquiry/{inquiryid}
 const API_MODIFY = '/api/user/inquiry/modify';
 const API_DELETE = '/api/user/inquiry/delete';
 const API_DOWNLOAD = '/api/user/files/download';
+const API_VIEW = '/api/files/view';
 
 /**
  * 문의사항 작성
@@ -29,9 +31,20 @@ export async function writeInquiry(userId, { title, content, file_id = null }) {
  * @returns {Promise<Array>}
  */
 export async function fetchMyInquiries(userId) {
-  const res = await apiClient.post(API_LIST, { user_id: Number(userId) });
+  const res = await apiClient.get(API_LIST, { params: { user_id: userId } });
   const data = res.data;
   return Array.isArray(data) ? data : (data?.data ?? []);
+}
+
+/**
+ * 문의사항 상세 조회 (GET /api/user/inquiry/{inquiryid})
+ * @param {string|number} userId (현재는 inquiryId만 필요하지만, API 명세에 따라 userId가 필요할 수 있어 남겨둠)
+ * @param {number} inquiryId
+ * @returns {Promise<Object>} 문의 상세 객체
+ */
+export async function fetchInquiryDetail(inquiryId) {
+  const res = await apiClient.get(`${API_DETAIL}/${inquiryId}`);
+  return res.data;
 }
 
 /**
@@ -69,23 +82,39 @@ export async function deleteInquiry(userId, inquiryId) {
 
 /**
  * 첨부파일 다운로드 (Blob 받아서 브라우저 다운로드)
- * @param {string} filename - DB/로컬 파일명
+ * @param {string} filepath - 백엔드에서 받은 파일 경로/이름 (예: uuid.ext)
+ * @param {string} originalFilename - 다운로드될 파일명 (브라우저에 표시될 이름)
  */
-export async function downloadFile(filename) {
-  if (!filename) return;
+export async function downloadFile(filepath, originalFilename) {
+  if (!filepath) return;
   const res = await apiClient.get(API_DOWNLOAD, {
-    params: { file: filename },
+    params: { file: filepath },
     responseType: 'blob',
   });
   const blob = res.data;
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = filename || 'download';
+  a.download = originalFilename || 'download';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
+}
+
+/**
+ * 첨부파일 미리보기 (Blob 받아서 새 탭에서 열기)
+ * @param {string} filepath - 백엔드에서 받은 파일 경로/이름 (예: uuid.ext)
+ */
+export async function viewFile(filepath) {
+  if (!filepath) return;
+  const res = await apiClient.get(API_VIEW, {
+    params: { file: filepath },
+    responseType: 'blob',
+  });
+  const blob = res.data;
+  const fileURL = window.URL.createObjectURL(blob);
+  window.open(fileURL);
 }
 
 const API_IMAGE = '/api/image';
@@ -133,6 +162,8 @@ export async function uploadAttachmentFile(file) {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
   const d = res.data;
-  if (d && (d.file_id != null || d.id != null)) return Number(d.file_id ?? d.id);
+  // 변경된 API 응답: { result: 'Y', file_id: 123 }
+  if (d && d.result === 'Y' && d.file_id != null) return Number(d.file_id);
+  if (d && (d.file_id != null || d.id != null)) return Number(d.file_id ?? d.id); // 기존 호환성
   return null;
 }

@@ -28,8 +28,8 @@ import CouponPage from './payment/CouponPage';
 import SuccessPage from './payment/SuccessPage';
 import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
-import UseSuccessPage from './payment/UseSuccessPage';
-import UseFailPage from './payment/UseFailPage';
+
+
 
 function AppContent() {
   const { isLoggedIn, userId, logout } = useAuth();
@@ -61,23 +61,21 @@ function AppContent() {
           <Route path="edit" element={<EditProfilePage />} />
           <Route path="change-password" element={<ChangePasswordPage />} />
           <Route path="history" element={<HistoryPage />} />
-          <Route path="refund-request" element={<RefundRequestPage />} />
         </Route>
 
         {/* Payment Routes */}
-        <Route path="payment" element={<PaymentPage />}>
-          <Route index element={<Navigate to="charge-point" replace />} />
-          <Route path="charge-point" element={<ChargePointPage />} />
+        <Route path="payment">
+          <Route index element={<PaymentPage />} />
+          <Route path="charge" element={<ChargePointPage />} />
           <Route path="coupon" element={<CouponPage />} />
           <Route path="success" element={<SuccessPage />} />
           <Route path="fail" element={<FailPage />} />
-          <Route path="use-point" element={<UsePointPage />} />
-          <Route path="use-success" element={<UseSuccessPage />} />
-          <Route path="use-fail" element={<UseFailPage />} />
+          <Route path="use" element={<UsePointPage />} />
         </Route>
 
         {/* Top-level History route as in Layout.js link */}
         <Route path="history" element={<HistoryPage />} />
+        <Route path="refund" element={<RefundRequestPage />} />
 
         {/* Fallback for unmatched routes within the Layout */}
         <Route path="*" element={<Navigate to="/" replace />} />

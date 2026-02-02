@@ -63,6 +63,8 @@ const ChangePasswordPage = () => {
         }
     };
 
+    const hintStyle = { color: '#0094B2', fontSize: '0.8rem', marginTop: '4px' };
+
     return (
         <div className="edit-profile-container"> {/* Reusing container style */}
             <h2 className="edit-profile-header">비밀번호 변경</h2> {/* Reusing header style */}
@@ -90,6 +92,7 @@ const ChangePasswordPage = () => {
                         required
                         disabled={loading}
                     />
+                    <p style={hintStyle}>영문, 숫자, 특수문자 중 2종류를 조합하여 8자 이상으로 입력해주세요.</p>
                 </div>
                 <div className="input-group">
                     <label htmlFor="confirmNewPassword">새 비밀번호 확인</label>

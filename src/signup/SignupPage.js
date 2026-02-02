@@ -35,7 +35,9 @@ const SignupPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || '회원가입에 실패했습니다.');
+        const errorMessage = errorData.error || '회원가입에 실패했습니다.';
+        alert(errorMessage);
+        throw new Error(errorMessage);
       }
 
       // Handle successful signup
@@ -48,6 +50,8 @@ const SignupPage = () => {
       setIsLoading(false);
     }
   };
+
+  const hintStyle = { color: '#0094B2', fontSize: '0.8rem', marginTop: '4px' };
 
   return (
     <div className="signup-container">
@@ -62,6 +66,7 @@ const SignupPage = () => {
             onChange={(e) => setUsername(e.target.value)}
             required
           />
+          <p style={hintStyle}>5자 이상, 20자 이하로 입력해주세요.</p>
         </div>
         <div className="input-group">
           <label htmlFor="name">이름</label>
@@ -82,6 +87,7 @@ const SignupPage = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          <p style={hintStyle}>이메일 형식에 맞게 입력해주세요.</p>
         </div>
         <div className="input-group">
           <label htmlFor="phone">전화번호</label>
@@ -92,6 +98,7 @@ const SignupPage = () => {
             onChange={(e) => setPhone(e.target.value)}
             // Phone is not NOT NULL in DB, so making it not required in UI too
           />
+          <p style={hintStyle}>-를 제외한 11자리 숫자를 입력해주세요. (예: 01012345678)</p>
         </div>
         <div className="input-group">
           <label htmlFor="password">비밀번호</label>
@@ -102,6 +109,7 @@ const SignupPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <p style={hintStyle}>영문, 숫자, 특수문자 중 2종류를 조합하여 8자 이상으로 입력해주세요.</p>
         </div>
         <div className="input-group">
           <label htmlFor="confirmPassword">비밀번호 확인</label>

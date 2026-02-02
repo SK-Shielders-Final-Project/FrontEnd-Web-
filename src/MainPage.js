@@ -1,8 +1,12 @@
 import React from 'react';
 import './MainPage.css'; // 스타일 분리
+import ChatbotContainer from "./chatbot/ChatbotContainer";
+import MapContainer from './components/map/MapContainer';
+
 
 const MainPage = ({ user }) => {
   return (
+    
     <div className="main-container">
       {/* 1. 상단 배너 영역 (이미지 + 타이틀) */}
       <section className="hero-section">
@@ -16,6 +20,13 @@ const MainPage = ({ user }) => {
             당신의 일상에 활력을 더해주는 스마트한 자전거 공유 서비스입니다.
           </p>
         </div>
+      </section>
+
+      {/* 지도 표시 영역 */}
+      <section className="map-section">
+        <h2>실시간 자전거 위치</h2>
+        <p>지도를 클릭하여 주변 자전거를 탐색하세요.</p>
+        <MapContainer />
       </section>
 
       {/* 2. 서비스 특징 요약 */}
@@ -56,6 +67,7 @@ const MainPage = ({ user }) => {
         )}
       </section>
     </div>
+    
   );
 };
 

@@ -70,7 +70,9 @@ export default function MembersPage() {
       console.error(e);
       // 실패 시 롤백
       setMembers(prev);
-      setError(e?.message || "권한 수정 실패");
+      const errorMessage = e.response?.data?.error || e.message || "권한 수정 실패";
+      alert(errorMessage); // Display alert with the error message
+      setError(errorMessage);
     } finally {
       setSavingId(null);
     }
@@ -104,7 +106,15 @@ export default function MembersPage() {
         React.createElement(
           "tr",
           null,
-          ["ID", "EMAIL", "ROLE", "권한 수정"].map((h) =>
+          [
+            "ID",
+            "USERNAME",
+            "NAME",
+            "EMAIL",
+            "PHONE",
+            "ROLE",
+            "권한 수정",
+          ].map((h) =>
             React.createElement("th", { key: h, style: tableStyles.th }, h)
           )
         )
@@ -117,9 +127,11 @@ export default function MembersPage() {
             "tr",
             { key: m.id },
             React.createElement("td", { style: tableStyles.td }, String(m.id)),
+            React.createElement("td", { style: tableStyles.td }, m.userName),
+            React.createElement("td", { style: tableStyles.td }, m.name),
             React.createElement("td", { style: tableStyles.td }, m.email),
+            React.createElement("td", { style: tableStyles.td }, m.phone),
             React.createElement("td", { style: tableStyles.td }, m.role),
-
             React.createElement(
               "td",
               { style: tableStyles.td },

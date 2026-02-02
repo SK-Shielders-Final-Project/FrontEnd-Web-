@@ -72,10 +72,10 @@ const SuccessPage = () => {
           
           <div style={{ marginTop: '30px' }}>
             <button 
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/payment')}
               style={{ padding: '10px 20px', backgroundColor: 'skyblue', border: 'none', color: 'white', borderRadius: '5px', cursor: 'pointer', fontSize: '16px' }}
             >
-              홈으로 돌아가기
+              목록으로 돌아가기
             </button>
           </div>
         </div>
