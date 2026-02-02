@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCookie, removeCookie } from '../utils/cookie';
 
 const ProtectedRoute = ({ user, loading, children }) => {
   const navigate = useNavigate();
@@ -10,13 +11,13 @@ const ProtectedRoute = ({ user, loading, children }) => {
       return;
     }
 
-    const isLoggingOut = localStorage.getItem('isLoggingOut');
+    const isLoggingOut = getCookie('isLoggingOut');
 
     // After loading is complete, if there is no user:
     if (!user) {
       // If the user is actively logging out, suppress the alert.
       if (isLoggingOut === 'true') {
-        localStorage.removeItem('isLoggingOut'); // Clear the flag
+        removeCookie('isLoggingOut'); // Clear the flag
       } else {
         alert('로그인이 필요합니다.');
       }

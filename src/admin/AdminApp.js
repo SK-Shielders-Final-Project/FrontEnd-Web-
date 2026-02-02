@@ -6,24 +6,30 @@ import InquiriesPage from "./pages/InquiriesPage";
 import BikesPage from "./pages/BikesPage";
 import MembersPage from "./pages/MembersPage";
 import { logoutAdmin } from "../auth/authUtils";
+import { getCookie, setCookie } from "../utils/cookie";
+import { jwtDecode } from "jwt-decode";
 
 // Placeholder for DashboardPage if it doesn't exist yet
 const AdminDashboardPage = () => <div>관리자 대시보드</div>;
 
 const ProtectedAdminRoute = ({ children }) => {
-  const adminToken = localStorage.getItem('adminToken');
+  const adminToken = getCookie('adminToken');
   return adminToken ? children : <Navigate to="/admin" replace />;
 };
 
 export default function AdminApp() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [adminLoggedIn, setAdminLoggedIn] = useState(!!localStorage.getItem('adminToken'));
+  const [adminLoggedIn, setAdminLoggedIn] = useState(!!getCookie('adminToken'));
 
   const handleAdminLoginSuccess = (token, userId, refreshToken) => {
-    localStorage.setItem('adminToken', token);
-    localStorage.setItem('adminId', userId);
-    localStorage.setItem('adminRefreshToken', refreshToken);
+    const decodedToken = jwtDecode(token);
+    const adminLevel = decodedToken.level; 
+
+    setCookie('adminToken', token, 1);
+    setCookie('adminId', userId, 1);
+    setCookie('adminRefreshToken', refreshToken, 7);
+    setCookie('adminLevel', adminLevel, 1);
     setAdminLoggedIn(true);
     navigate('/admin/dashboard');
   };

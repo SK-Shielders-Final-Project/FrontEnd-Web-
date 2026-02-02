@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axiosConfig';
 import './EditProfilePage.css';
 import { useNavigate } from 'react-router-dom';
+import { getCookie } from '../utils/cookie';
 
 const EditProfilePage = () => {
     const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ const EditProfilePage = () => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const storedUserId = localStorage.getItem('userId');
+                const storedUserId = getCookie('userId');
                 if (!storedUserId) {
                     alert('로그인 정보에서 사용자 ID를 찾을 수 없습니다. 다시 로그인해주세요.');
                     navigate('/login'); // Redirect to login if no userId

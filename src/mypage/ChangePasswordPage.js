@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../api/axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import { removeCookie, setCookie } from '../utils/cookie';
 // Reusing EditProfilePage.css for basic form styling, or create a new one if distinct styles are needed
 import './EditProfilePage.css'; // Assuming similar form styling
 
@@ -45,9 +46,9 @@ const ChangePasswordPage = () => {
             await api.put('/api/user/auth/changepw', payload);
             
             // Logout user after successful password change
-            localStorage.removeItem('token');
-            localStorage.removeItem('userId');
-            localStorage.setItem('isLoggingOut', 'true'); // To suppress ProtectedRoute alert
+            removeCookie('token');
+            removeCookie('userId');
+            setCookie('isLoggingOut', 'true'); // To suppress ProtectedRoute alert
             
             alert('비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.');
             navigate('/login');

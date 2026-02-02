@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { refreshAccessToken } from './authApi';
 import { logoutUser, logoutAdmin } from '../auth/authUtils';
+import { getCookie, setCookie } from '../utils/cookie';
 
 const apiClient = axios.create();
 
 apiClient.interceptors.request.use(
   (config) => {
-    const adminToken = localStorage.getItem('adminToken');
-    const token = localStorage.getItem('token');
+    const adminToken = getCookie('adminToken');
+    const token = getCookie('token');
 
     const authEndpoints = ['/api/auth/refresh', '/api/user/auth/login', '/api/admin/auth/login', '/api/user/auth/signup'];
     if (authEndpoints.includes(config.url)) {
@@ -43,7 +44,7 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       const refreshTokenName = authType === 'admin' ? 'adminRefreshToken' : 'refreshToken';
-      const refreshToken = localStorage.getItem(refreshTokenName);
+      const refreshToken = getCookie(refreshTokenName);
 
       if (refreshToken) {
         try {
@@ -51,9 +52,9 @@ apiClient.interceptors.response.use(
           const newAccessToken = response.accessToken;
 
           if (authType === 'admin') {
-            localStorage.setItem('adminToken', newAccessToken);
+            setCookie('adminToken', newAccessToken, 1);
           } else {
-            localStorage.setItem('token', newAccessToken);
+            setCookie('token', newAccessToken, 1);
           }
 
           originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
