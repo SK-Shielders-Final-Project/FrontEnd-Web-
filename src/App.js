@@ -28,6 +28,7 @@ import CouponPage from './payment/CouponPage';
 import SuccessPage from './payment/SuccessPage';
 import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
+import PointGiftPage from './payment/PointGiftPage';
 
 
 
@@ -71,6 +72,7 @@ function AppContent() {
           <Route path="success" element={<SuccessPage />} />
           <Route path="fail" element={<FailPage />} />
           <Route path="use" element={<UsePointPage />} />
+          <Route path="gift" element={<PointGiftPage />} />
         </Route>
 
         {/* Top-level History route as in Layout.js link */}
