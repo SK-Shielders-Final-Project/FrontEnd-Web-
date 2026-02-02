@@ -29,6 +29,7 @@ import SuccessPage from './payment/SuccessPage';
 import FailPage from './payment/FailPage';
 import UsePointPage from './payment/UsePointPage';
 import PointGiftPage from './payment/PointGiftPage';
+import PointGiftHistoryPage from './mypage/PointGiftHistoryPage';
 
 
 
@@ -62,6 +63,7 @@ function AppContent() {
           <Route path="edit" element={<EditProfilePage />} />
           <Route path="change-password" element={<ChangePasswordPage />} />
           <Route path="history" element={<HistoryPage />} />
+          <Route path="gift-history" element={<PointGiftHistoryPage />} />
         </Route>
 
         {/* Payment Routes */}
