@@ -137,3 +137,62 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* 검색 바 컨테이너 */
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 10px 0;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap; /* 모바일 대응 */
+}
+
+/* 입력 필드 공통 */
+.search-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* 날짜 사이 물결 */
+.tilde {
+  font-weight: bold;
+  color: #666;
+}
+
+/* 텍스트 입력창 (자전거 ID) */
+.text-input {
+  width: 120px;
+}
+
+/* 검색 버튼 */
+.search-btn {
+  padding: 8px 16px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.search-btn:hover {
+  background-color: #555;
+}
+
+/* 모바일 화면 대응 */
+@media (max-width: 480px) {
+  .search-bar-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .text-input {
+    width: 100%;
+  }
+}

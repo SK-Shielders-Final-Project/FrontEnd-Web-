@@ -9,7 +9,6 @@ const generateWeakKey = () => {
     // 이 숫자를 MD5로 감싸서 키로 변환
     const key = CryptoJS.MD5(timestampSec.toString()).toString().substring(0, 16);
     
-    console.log(`⏰ [초 단위 생성] 시각: ${timestampSec} -> 키: ${key}`);
     return key;
 };
 
