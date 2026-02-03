@@ -1,28 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, useSearchParams } from 'react-router-dom'; // useSearchParams import 필수
 import './HistoryPage.css';
 import api from '../api/axiosConfig';
 
 const HistoryPage = () => {
   const navigate = useNavigate(); 
   
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const [activeTab, setActiveTab] = useState('payment');
   const [paymentList, setPaymentList] = useState([]);
   const [usageList, setUsageList] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [inputStartDate, setInputStartDate] = useState(searchParams.get('startDate') || '');
+  const [inputEndDate, setInputEndDate] = useState(searchParams.get('endDate') || '');
+  const [inputBikeId, setInputBikeId] = useState(searchParams.get('bikeId') || '');
+
+  // 탭 변경 시 URL 파라미터 초기화
+  useEffect(() => {
+    if (activeTab === 'payment') {
+      setSearchParams({});
+    }
+  }, [activeTab, setSearchParams]);
 
   // 데이터 조회
   const fetchData = async () => {
     setLoading(true);
     setPaymentList([]);
     setUsageList([]);
+    
     try {
       if (activeTab === 'payment') {
         const response = await api.get('/api/payments/user');
         setPaymentList(response.data);
       } else {
-        const response = await api.get('/api/user/point');
-        setUsageList(response.data);
+        // URL에서 검색 조건 가져오기
+        const queryStart = searchParams.get('startDate');
+        const queryEnd = searchParams.get('endDate');
+        const queryBikeId = searchParams.get('bikeId');
+
+        // 검색 조건이 있으면 검색 API 호출, 없으면 전체 조회
+        if (queryStart && queryEnd) {
+          console.log(`[API 호출] /rentals/search?startDate=${queryStart}&endDate=${queryEnd}&bikeId=${queryBikeId}`);
+          
+          const response = await api.get('/api/user/point/search', {
+            params: {
+              startDate: queryStart,
+              endDate: queryEnd,
+              bikeId: queryBikeId || null
+            }
+          });
+          setUsageList(response.data);
+        } else {
+          // 검색 조건이 없으면 기존 전체 조회
+          const response = await api.get('/api/user/point'); 
+          setUsageList(response.data);
+        }
       }
     } catch (error) {
       console.error("데이터 조회 실패:", error);
@@ -31,9 +65,26 @@ const HistoryPage = () => {
     }
   };
 
+  // URL이 바뀌거나 탭이 바뀌면 데이터 다시 조회
   useEffect(() => {
     fetchData();
-  }, [activeTab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, searchParams]);
+
+  // 검색 버튼 핸들러 (URL 변경)
+  const handleSearch = () => {
+    if (!inputStartDate || !inputEndDate) {
+      alert("시작 날짜와 종료 날짜를 모두 선택해주세요.");
+      return;
+    }
+
+    // URL을 변경함 -> useEffect가 감지해서 fetchData 실행
+    setSearchParams({
+      startDate: inputStartDate,
+      endDate: inputEndDate,
+      bikeId: inputBikeId
+    });
+  };
 
   // [Action] 아이템 클릭 -> /refund 페이지로 이동
   const handleItemClick = (item) => {
@@ -45,7 +96,6 @@ const HistoryPage = () => {
     }
 
     if (window.confirm(confirmMsg)) {
-      // ★ 페이지 이동! (state에 선택한 아이템 정보를 담아서 보냄)
       navigate('/refund', { state: { targetItem: item } });
     }
   };
@@ -86,6 +136,32 @@ const HistoryPage = () => {
         </button>
       </div>
 
+    {activeTab === 'usage' && (
+        <div className="search-bar-container">
+          <input 
+            type="date" 
+            value={inputStartDate}
+            onChange={(e) => setInputStartDate(e.target.value)}
+            className="search-input"
+          />
+          <span className="tilde">~</span>
+          <input 
+            type="date" 
+            value={inputEndDate}
+            onChange={(e) => setInputEndDate(e.target.value)}
+            className="search-input"
+          />
+          <input 
+            type="text" 
+            placeholder="자전거 ID (선택)"
+            value={inputBikeId}
+            onChange={(e) => setInputBikeId(e.target.value)}
+            className="search-input text-input"
+          />
+          <button onClick={handleSearch} className="search-btn">검색</button>
+        </div>
+      )}
+
       <div className="history-list">
         {loading ? (
           <p className="empty-msg">불러오는 중...</p>
@@ -123,7 +199,7 @@ const HistoryPage = () => {
               </>
             )}
             
-            {/* ... 이용 내역 부분은 기존과 동일 ... */}
+            {/* ... 이용 내역 부분 ... */}
              {activeTab === 'usage' && (
               <>
                 {usageList.length === 0 ? (
