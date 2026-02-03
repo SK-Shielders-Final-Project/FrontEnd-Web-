@@ -34,10 +34,9 @@ const LoginPage = () => {
         const keyExchangeSuccess = await performKeyExchange();
 
         if (keyExchangeSuccess) {
-            alert("로그인 및 보안 채널 생성 완료!");
             navigate('/'); // 홈으로 이동
         } else {
-            alert("로그인은 됐는데 보안 키 설정에 실패했습니다.");
+            alert("보안 키 설정에 실패했습니다.");
         }
 
     } catch (error) {

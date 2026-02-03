@@ -7,6 +7,7 @@ import InquiriesPage from "./pages/InquiriesPage";
 import BikesPage from "./pages/BikesPage";
 import MembersPage from "./pages/MembersPage";
 import TwoFactorSetupPage from "./pages/TwoFactorSetupPage";
+import EmailTemplatePage from "./pages/EmailTemplatePage";
 import { logoutAdmin } from "../auth/authUtils";
 import { getCookie, setCookie } from "../utils/cookie";
 import { jwtDecode } from "jwt-decode";
@@ -69,6 +70,16 @@ export default function AdminApp() {
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} /> {/* Catch-all for logged in */}
           </>
         )}
+      <Route path="/" element={<AdminLayout onLogout={handleAdminLogout} />}>
+        {/* Default route for /admin, redirect to dashboard if logged in */}
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>} />
+        <Route path="inquiries" element={<ProtectedAdminRoute><InquiriesPage /></ProtectedAdminRoute>} />
+        <Route path="bikes" element={<ProtectedAdminRoute><BikesPage /></ProtectedAdminRoute>} />
+        <Route path="members" element={<ProtectedAdminRoute><MembersPage /></ProtectedAdminRoute>} />
+        <Route path="email-templates" element={<ProtectedAdminRoute><EmailTemplatePage /></ProtectedAdminRoute>} />
+        {/* Catch-all for any unmatched admin sub-routes, redirect to dashboard */}
+        <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Route>
     </Routes>
   );
