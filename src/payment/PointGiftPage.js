@@ -1,87 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
-import JSEncrypt from 'jsencrypt';
 import CryptoJS from 'crypto-js';
-import { getUsernameFromToken } from '../utils/jwtUtils'; // 유틸 함수 import 필요
+import { getUsernameFromToken } from '../utils/jwtUtils';
 import './PointGiftPage.css';
-
-// [취약점] Math.random()을 이용해 허술한 키 생성 (문자열 반환)
-function generateWeakKey() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 16; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result; // 예: "A1b2C3d4..."
-}
 
 const PointGiftPage = () => {
   const navigate = useNavigate();
-  
-  const [receiverName, setReceiverName] = useState(''); // 변수명 수정
+  const [receiverName, setReceiverName] = useState('');
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleGiftSend = async () => {
-    if (!receiverName || !amount) {
-      alert("받는 사람과 금액을 입력해주세요.");
-      return;
-    }
-    
-    // 1. 유틸 함수로 username 가져오기
-    const myUsername = getUsernameFromToken();
-    if (!myUsername) {
-      alert("로그인 정보가 올바르지 않습니다.");
-      return;
-    }
-    console.log("내 아이디:", myUsername);
+  // 페이지 들어오자마자 키가 있는지 검사
+  useEffect(() => {
+      const savedKey = localStorage.getItem('sessionKey');
+      if (!savedKey) {
+          alert("보안 키가 없습니다. 다시 로그인해주세요.");
+          navigate('/login');
+      }
+  }, [navigate]);
 
+  const handleGiftSend = async () => {
+    if (!receiverName || !amount) return;
+
+    const myUsername = getUsernameFromToken();
     setLoading(true);
 
     try {
-      // --- [Step 1: 공개키 요청] ---
-      // apiClient를 쓰면 headers에 토큰을 자동으로 넣어주므로 생략 가능
-      const publicKeyRes = await api.get('/api/user/crypto/public-key');
-      const serverPublicKey = publicKeyRes.data.publicKey;
+      // -----------------------------------------------------------
+      // [수정된 부분] 키 교환 로직 삭제! -> 저장된 키 꺼내기
+      // -----------------------------------------------------------
+      const aesKeyStr = localStorage.getItem('sessionKey'); // ★ 저장된 키 사용
+      
+      if (!aesKeyStr) throw new Error("세션 키가 만료되었습니다.");
 
-      // --- [Step 1.5: 취약한 대칭키 생성] ---
-      const aesKeyStr = generateWeakKey(); 
-      console.log("😈 생성된 취약한 키:", aesKeyStr);
+      console.log("🔑 저장된 키로 암호화 수행:", aesKeyStr);
 
-      // --- [Step 2: 키 교환 (RSA)] ---
-      const encryptor = new JSEncrypt();
-      encryptor.setPublicKey(serverPublicKey);
-      // aesKeyStr는 문자열이므로 바로 암호화 가능
-      const encryptedAesKey = encryptor.encrypt(aesKeyStr); 
-
-      await api.post('/api/user/crypto/exchange-key', 
-        { encryptedSymmetricKey: encryptedAesKey }
-      );
-
-      // --- [Step 3: 데이터 전송 (AES)] ---
+      // 데이터 준비
       const payload = {
         senderName: myUsername,
         receiverName: receiverName,
         amount: parseInt(amount, 10)
       };
 
-      // ★ 중요: 취약한 키(String)를 CryptoJS Key 객체로 변환
-      // Base64가 아니라 Utf8로 파싱해야 합니다!
+      // AES 암호화 (저장된 키 사용)
       const keyParsed = CryptoJS.enc.Utf8.parse(aesKeyStr);
-
       const encryptedPayload = CryptoJS.AES.encrypt(
         JSON.stringify(payload), 
         keyParsed, 
-        { 
-            mode: CryptoJS.mode.ECB, 
-            padding: CryptoJS.pad.Pkcs7 // Java PKCS5와 호환
-        }
+        { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }
       ).toString();
 
-      const giftRes = await api.post('/api/user/point/gift',
-        { encryptedPayload: encryptedPayload }
-      );
+      // 전송
+      const giftRes = await api.post('/api/user/point/gift', { 
+          encryptedPayload: encryptedPayload 
+      });
 
       console.log("성공:", giftRes.data);
       alert("🎁 포인트 선물이 완료되었습니다!");
@@ -89,8 +62,7 @@ const PointGiftPage = () => {
 
     } catch (error) {
       console.error("실패:", error);
-      const msg = error.response?.data?.message || error.response?.data || error.message;
-      alert("오류 발생: " + msg);
+      alert("오류: " + error.message);
     } finally {
       setLoading(false);
     }
