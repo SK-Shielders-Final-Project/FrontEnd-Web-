@@ -11,6 +11,9 @@ const MyPage = () => {
                     <li>
                         <NavLink to="/mypage/view">회원정보 조회</NavLink>
                     </li>
+                    <li>
+                        <NavLink to="/mypage/gift-history">포인트 선물 내역</NavLink>
+                    </li>
                 </ul>
             </aside>
             <main className="mypage-content">

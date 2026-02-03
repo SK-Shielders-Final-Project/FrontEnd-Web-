@@ -29,6 +29,9 @@ const PaymentPage = () => {
     navigate('/payment/coupon');
   };
 
+  const handleGiftClick = () => {
+    navigate('/payment/gift');
+  };
   return (
     <div className="charge-container">
       <h2 className="page-title">결제하기</h2>
@@ -51,9 +54,15 @@ const PaymentPage = () => {
         />
       </div>
 
-      <div className="coupon-section">
-        <button className="btn-coupon" onClick={handleCouponClick}>
-          🎟️ 쿠폰 등록하고 포인트 받기
+      {/* 쿠폰 등록 */}
+      <div className="action-section">
+        <button className="btn-action btn-coupon" onClick={handleCouponClick}>
+          <span>🎟️</span> 쿠폰 등록
+        </button>
+        
+        {/* 선물하기 버튼 */}
+        <button className="btn-action btn-gift" onClick={handleGiftClick}>
+          <span>🎁</span> 포인트 선물
         </button>
       </div>
     </div>

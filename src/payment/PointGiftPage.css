@@ -1,0 +1,96 @@
+/* PointGiftPage.css */
+
+.gift-page-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.gift-title {
+  font-size: 2rem;
+  color: #0094b2;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.gift-subtitle {
+  color: #666;
+  margin-bottom: 40px;
+}
+
+/* 입력 폼 카드 스타일 */
+.gift-form-card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0f7fa;
+}
+
+/* 입력 필드 그룹 */
+.input-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  transition: border-color 0.2s;
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+}
+
+.input-group input:focus {
+  border-color: #0094b2;
+  outline: none;
+}
+
+/* 버튼 그룹 */
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-cancel, .btn-send {
+  flex: 1;
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-cancel {
+  background-color: #f1f3f5;
+  color: #495057;
+}
+
+.btn-send {
+  background-color: #0094b2;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 148, 178, 0.2);
+}
+
+.btn-send:hover:not(:disabled) {
+  background-color: #007c95;
+  transform: translateY(-2px);
+}
+
+.btn-send:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

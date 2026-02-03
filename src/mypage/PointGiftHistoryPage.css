@@ -1,0 +1,71 @@
+.history-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.history-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #0094b2; /* 포인트 컬러 */
+    padding-bottom: 10px;
+}
+
+.loading-msg, .error-msg, .no-data {
+    text-align: center;
+    padding: 50px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.error-msg {
+    color: red;
+}
+
+/* 테이블 스타일 */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.history-table th, .history-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.history-table th {
+    background-color: #f8f9fa;
+    color: #555;
+    font-weight: 600;
+}
+
+/* 데이터 행 스타일 */
+.col-date {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.col-target {
+    font-weight: bold;
+    color: #333;
+}
+
+/* 보냄/받음 뱃지 스타일 */
+.col-type {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+.col-type.sent { color: #ff6b6b; } /* 보냄: 빨간색 계열 */
+.col-type.received { color: #0094b2; } /* 받음: 파란색 계열 */
+
+/* 금액 스타일 */
+.col-amount {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.col-amount.minus { color: #ff6b6b; }
+.col-amount.plus { color: #0094b2; }

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../components/auth/AuthContext';
 import { loginUser } from '../api/authApi';
 import './LoginPage.css';
+import { performKeyExchange } from '../utils/cryptoUtils'; 
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -24,10 +25,21 @@ const LoginPage = () => {
 
       if (accessToken && refreshToken && userId) {
         login(accessToken, refreshToken, userId);
-        navigate('/mypage/view');
+        // navigate('/mypage/view');
       } else {
         throw new Error('로그인에 성공했지만 토큰 또는 사용자 ID를 받지 못했습니다.');
       }
+
+      // 로그인 시 대칭키 교환 (e2e)
+        const keyExchangeSuccess = await performKeyExchange();
+
+        if (keyExchangeSuccess) {
+            alert("로그인 및 보안 채널 생성 완료!");
+            navigate('/'); // 홈으로 이동
+        } else {
+            alert("로그인은 됐는데 보안 키 설정에 실패했습니다.");
+        }
+
     } catch (error) {
       console.error("Login API call failed:", error); // Add this line
       const message = error.response?.data?.error || error.message || '로그인에 실패했습니다.';

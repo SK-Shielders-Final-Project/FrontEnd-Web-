@@ -1,6 +1,5 @@
 /* ChargePointPage.css */
 
-/* 전체 페이지 컨테이너 */
 .charge-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -8,7 +7,6 @@
   text-align: center;
 }
 
-/* 페이지 제목 */
 .page-title {
   font-size: 2rem;
   font-weight: bold;
@@ -16,114 +14,126 @@
   color: #333;
 }
 
-/* 카드들을 감싸는 컨테이너 */
+/* --- 상단 카드 영역 --- */
 .card-container {
   display: flex;
   justify-content: center;
   gap: 30px; /* 카드 사이 간격 */
 }
 
-/* 개별 카드 스타일 */
 .point-card {
-  /* 메인 컬러 skyblue 적용 */
   background-color: #0094b2; 
   color: white;
   
-  flex: 1; /* 두 카드가 동일한 너비를 가짐 */
-  max-width: 400px; /* 너무 넓어지지 않도록 제한 */
+  flex: 1; 
+  max-width: 400px; 
   padding: 40px;
-  border-radius: 15px; /* 둥근 모서리 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   
-  cursor: pointer; /* 마우스 올리면 손가락 모양 */
+  cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* 마우스 올렸을 때 효과 */
 .point-card:hover {
-  transform: translateY(-5px); /* 살짝 위로 떠오름 */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 그림자 진하게 */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* 아이콘 스타일 */
 .card-icon {
   font-size: 3rem;
   margin-bottom: 20px;
 }
 
-/* 카드 제목 */
 .card-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 15px;
 }
 
-/* 카드 설명 */
 .card-description {
   font-size: 1rem;
   line-height: 1.5;
 }
 
-.coupon-section {
-  margin-top: 50px; /* 카드와의 간격 */
+/* --- [변경] 하단 버튼 영역 (쿠폰 + 선물) --- */
+.action-section {
+  margin-top: 30px; /* 카드와의 간격 */
   display: flex;
   justify-content: center;
+  gap: 30px; /* 위쪽 카드와 동일한 간격 유지 */
   width: 100%;
 }
 
-/* [추가] 쿠폰 등록 버튼 스타일 */
-.btn-coupon {
-  width: 100%;
-  max-width: 830px; /* 카드 두 개를 합친 너비 + 간격(30px) 정도에 맞춤 */
-  padding: 25px;
+/* 버튼 공통 스타일 */
+.btn-action {
+  flex: 1; /* 너비를 균등하게 분배 */
+  max-width: 400px; /* 위쪽 카드와 너비 맞춤 */
+  padding: 20px;
   
-  background-color: #ffffff; /* 흰색 배경 */
-  border: 2px dashed #0094b2; /* 메인 컬러 점선 테두리 (쿠폰 느낌) */
-  border-radius: 15px; /* 카드와 동일한 둥근 모서리 */
+  background-color: #ffffff;
+  border-radius: 15px;
   
-  color: #0094b2; /* 메인 컬러 글씨 */
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: bold;
   
   cursor: pointer;
   transition: all 0.2s ease;
   
-  /* 아이콘과 텍스트 정렬 */
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
+  
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* 쿠폰 버튼 마우스 올렸을 때 효과 */
-.btn-coupon:hover {
-  background-color: #e0f7fa; /* 아주 연한 하늘색 배경 */
-  transform: translateY(-5px); /* 카드처럼 위로 떠오르는 효과 */
-  box-shadow: 0 8px 16px rgba(0, 148, 178, 0.2); /* 파란빛 그림자 */
+/* 쿠폰 버튼 스타일 (점선 테두리) */
+.btn-coupon {
+  border: 2px solid #0094b2;
+  color: #0094b2;
 }
 
-/* 모바일 반응형 처리 (화면이 좁아질 때) */
+/* 선물 버튼 스타일 (실선 테두리 또는 다른 스타일) */
+.btn-gift {
+  border: 2px solid #0094b2; /* 실선으로 차별화 */
+  color: #0094b2;
+}
+
+/* 버튼 호버 효과 */
+.btn-action:hover {
+  background-color: #e0f7fa;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 148, 178, 0.2);
+}
+
+/* --- 반응형 처리 --- */
 @media (max-width: 768px) {
+  /* 카드 영역 세로 배치 */
   .card-container {
-    flex-direction: column; /* 카드를 세로로 배치 */
+    flex-direction: column;
     align-items: center;
   }
   
   .point-card {
-    width: 100%; /* 가로 꽉 차게 */
+    width: 100%;
     max-width: 100%;
   }
 
-  .btn-coupon {
-    width: 100%; /* 버튼도 가로 꽉 차게 */
+  /* [추가] 하단 버튼 영역도 세로 배치 */
+  .action-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* 모바일에서는 간격을 조금 좁게 */
+  }
+
+  .btn-action {
+    width: 100%;
+    max-width: 100%; /* 모바일에서는 가로 꽉 차게 */
   }
 }
-
-/* (참고) Font Awesome 아이콘을 쓰려면 index.html <head>에 아래 링크를 추가해야 합니다.
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-*/
