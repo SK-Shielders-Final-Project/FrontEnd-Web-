@@ -10,9 +10,9 @@ import {
   downloadFile,
   viewFile,
   uploadImageFile,
-  uploadImageUrl,
   uploadAttachmentFile,
 } from '../api/inquiryApi';
+import axios from 'axios';
 import './InquiryPage.css';
 
 // --- 외부 스크립트/스타일 로드 유틸리티 ---
@@ -44,6 +44,23 @@ function loadStyle(href) {
     document.head.appendChild(el);
   });
 }
+
+// 텍스트를 HTML 안전 문자로 변환
+const escapeHtml = (text) => {
+  if (!text) return "";
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+const decodeHtml = (html) => {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+};
 
 const SUMMERNOTE_CDN = 'https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist';
 
@@ -77,8 +94,10 @@ export default function InquiryPage() {
   const [formAttachFile, setFormAttachFile] = useState(null);
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
+  
+  // 중복 렌더링 방지용 Ref
+  const processedUrls = useRef(new Set());
 
-  // 문의 목록 로드
   const loadList = useCallback(async () => {
     if (!userId) return;
     setLoading(true);
@@ -93,7 +112,6 @@ export default function InquiryPage() {
     }
   }, [userId]);
 
-  // 문의 상세 로드
   const loadDetail = useCallback(async (inquiryId) => {
     if (!inquiryId) {
       setDetail(null);
@@ -117,21 +135,79 @@ export default function InquiryPage() {
     else setDetail(null);
   }, [selectedId, loadDetail]);
 
-  // Summernote 설정 (생략된 로직 동일)
   const isEditorActive = formMode === 'write' || formMode === 'edit';
+
   useEffect(() => {
     if (!isEditorActive || !editorRef.current) return;
     let cancelled = false;
+    processedUrls.current.clear();
+
     ensureSummernote().then(() => {
       if (cancelled || !editorRef.current || !window.jQuery) return;
       const $ = window.jQuery;
+
       $(editorRef.current).summernote({
-        placeholder: '내용을 입력하세요',
-        height: 200,
+        placeholder: '내용을 입력하세요.',
+        height: 300,
         lang: 'ko-KR',
         callbacks: {
           onImageUpload: (files) => {
             uploadImageFile(files[0]).then(url => $(editorRef.current).summernote('insertImage', url));
+          },
+          onKeyup: function(e) {
+            if (e.keyCode === 13) { 
+              const rawHtml = $(editorRef.current).summernote('code');
+              const plainText = rawHtml.replace(/<\/?[^>]+(>|$)/g, " ").trim();
+              const decodedText = decodeHtml(plainText);
+              
+              const urlRegex = /(https?:\/\/[^\s<>"]+)/g;
+              const matches = decodedText.match(urlRegex);
+              
+              if (matches && matches.length > 0) {
+                let lastUrl = matches[matches.length - 1].replace(/&amp;/g, '&').replace(/&nbsp;/g, '').trim();
+                
+                if (processedUrls.current.has(lastUrl)) return;
+                processedUrls.current.add(lastUrl);
+
+                // [수정] GET 방식 호출 및 새로운 데이터 구조(image 포함) 반영
+                axios.get(`/api/scrap?url=${encodeURIComponent(lastUrl)}`)
+                  .then(res => {
+                    if (editorRef.current && $(editorRef.current).data('summernote')) {
+                      const { title, description, url, image } = res.data;
+                      
+                      // 사진과 동일한 네이버 스타일 미리보기 카드 레이아웃
+                      const previewHtml = `
+                        <div class="link-preview-card" style="display: flex; border: 1px solid #e1e1e1; margin: 10px 0; background: #fff; max-width: 750px; text-decoration: none; font-family: 'Malgun Gothic', sans-serif; overflow: hidden; border-radius: 2px; cursor: pointer; user-select: none;">
+                          <div class="preview-image-wrap" style="flex: 0 0 200px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; border-right: 1px solid #f1f1f1;">
+                            <img src="${image || 'https://via.placeholder.com/200x120?text=No+Image'}" 
+                                 alt="Preview" 
+                                 style="width: 100%; height: auto; object-fit: cover; display: block;"/>
+                          </div>
+                          
+                          <div class="preview-text-wrap" style="flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                            <div style="font-size: 17px; font-weight: bold; color: #000; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                              ${escapeHtml(title || '제목 없음')}
+                            </div>
+                            <div style="font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                              ${escapeHtml(description || '내용 요약 정보가 없습니다.')}
+                            </div>
+                            <div style="font-size: 12px; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                              ${escapeHtml(url)}
+                            </div>
+                          </div>
+                        </div>
+                        <p><br></p>`;
+                      
+                      $(editorRef.current).summernote('focus');
+                      $(editorRef.current).summernote('pasteHTML', previewHtml);
+                    }
+                  })
+                  .catch(err => {
+                    console.error("❌ Scraping Failed:", err.response?.status);
+                    processedUrls.current.delete(lastUrl);
+                  });
+              }
+            }
           }
         }
       });
@@ -145,11 +221,13 @@ export default function InquiryPage() {
     };
   }, [isEditorActive, formMode]);
 
+  // 이하 resetForm 및 기존 핸들러 로직 동일
   const resetForm = () => {
     setFormMode(null);
     setFormTitle('');
     setFormContent('');
     setFormAttachFile(null);
+    processedUrls.current.clear();
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -160,7 +238,6 @@ export default function InquiryPage() {
     return formContent.trim();
   };
 
-  // 등록/수정/삭제 핸들러
   const handleSubmitWrite = async (e) => {
     e.preventDefault();
     const content = getEditorContent();
@@ -193,30 +270,13 @@ export default function InquiryPage() {
     } catch (e) { alert('삭제 실패'); }
   };
 
-  // --- 핵심 수정 구간: 파일 핸들러 ---
-  
   const handleDownload = (attachment) => {
     if (!attachment || !attachment.path) return alert('파일 정보 없음');
-    
-    // 백엔드 파라미터 요구사항: file={path}/{fileName}.{ext}
     const filepath = `${attachment.path}/${attachment.fileName}.${attachment.ext}`;
-    
-    // downloadFile(filepath, originalName)
-    downloadFile(filepath, attachment.originalName)
-      .catch((e) => alert('다운로드 실패'));
+    downloadFile(filepath, attachment.originalName).catch(() => alert('다운로드 실패'));
   };
 
-  const handlePreview = (attachment) => {
-    if (!attachment || !attachment.path) return alert('파일 정보 없음');
-    
-    const filepath = `${attachment.path}/${attachment.fileName}.${attachment.ext}`;
-    
-    // viewFile(filepath) 호출 -> 백엔드에서 이미지면 출력, 아니면 exec() 실행
-    viewFile(filepath)
-      .catch((e) => alert('미리보기 실패'));
-  };
 
-  // --- 렌더링 구간 ---
   return (
     <div className="inquiry-page">
       <h2>문의사항</h2>
@@ -225,7 +285,6 @@ export default function InquiryPage() {
       </div>
 
       <div className="inquiry-grid">
-        {/* 목록 섹션 */}
         <div className="inquiry-list">
           <div className="inquiry-list-inner">
             {list.map((item) => (
@@ -237,7 +296,6 @@ export default function InquiryPage() {
           </div>
         </div>
 
-        {/* 상세/폼 섹션 */}
         <div className="inquiry-detail">
           {formMode ? (
             <div className="inquiry-form">
@@ -264,7 +322,6 @@ export default function InquiryPage() {
                   <span onClick={() => handleDownload(detail.attachment)} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
                     {detail.attachment.originalName}
                   </span>
-                  <span onClick={() => handlePreview(detail.attachment)} style={{ cursor: 'pointer', marginLeft: '12px' }}>🔍 미리보기</span>
                 </div>
               )}
 
