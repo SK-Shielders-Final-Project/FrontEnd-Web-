@@ -27,13 +27,6 @@ const PointGiftPage = () => {
     setLoading(true);
 
     try {
-      // -----------------------------------------------------------
-      // [수정된 부분] 키 교환 로직 삭제! -> 저장된 키 꺼내기
-      // -----------------------------------------------------------
-      const aesKeyStr = localStorage.getItem('sessionKey'); // ★ 저장된 키 사용
-      
-      if (!aesKeyStr) throw new Error("세션 키가 만료되었습니다.");
-
       // 데이터 준비
       const payload = {
         senderName: myUsername,
@@ -41,8 +34,8 @@ const PointGiftPage = () => {
         amount: parseInt(amount, 10)
       };
 
-      // AES 암호화 (저장된 키 사용)
-      const keyParsed = CryptoJS.enc.Utf8.parse(aesKeyStr);
+      // AES 암호화
+      const keyParsed = CryptoJS.enc.Utf8.parse(localStorage.getItem('sessionKey'));
       const encryptedPayload = CryptoJS.AES.encrypt(
         JSON.stringify(payload), 
         keyParsed, 
