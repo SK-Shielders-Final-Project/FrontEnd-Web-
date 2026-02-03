@@ -1,0 +1,184 @@
+.email-template-container {
+    padding: 0; /* Remove padding from outer container */
+    background-color: #fafafa;
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
+}
+
+.email-template-content-wrapper {
+    /* Removed max-width to allow full width */
+    margin: 0; /* Changed from auto to 0 */
+    padding: 0; /* Changed from 2rem to 0 */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack children vertically */
+    height: calc(100vh - 80px); /* Adjust height for header, 4rem padding is no longer there */
+    background-color: #fafafa; /* Background for the content area */
+    /* Removed box-shadow and border-radius as it's now full width */
+}
+
+h1 {
+    text-align: left;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+    flex-shrink: 0;
+}
+
+.template-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    justify-content: flex-start;
+    flex-shrink: 0;
+}
+
+.template-selector label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555;
+}
+
+#template-select {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    min-width: 200px;
+    appearance: none;
+    background-color: white;
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%20197.3l-11.4-11.4L146.2%20268.4%2016.9%20185.9l-11.4%2011.4%20140.7%20140.8zM146.2%20126.5L5.5%2015.8%2016.9%204.4%20146.2%20108.7%20275.5%204.4l11.4%2011.4z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 0.65em auto, 100%;
+}
+
+.template-editor {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.editor-section, .preview-section {
+    flex: 1;
+    background-color: #fff;
+    padding: 1rem 1.5rem 2rem 1.5rem; /* Reduced top padding, increased bottom padding */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.editor-section h2, .preview-section h2 {
+    color: #333;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.75rem;
+    flex-shrink: 0;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+/* Specific form group for CodeMirror: do not let it grow */
+.form-group:has(label:contains("이메일 본문")) {
+    /* Removed flex-grow: 1; */
+    min-height: 0; /* Needed for flex-grow to work properly */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack label and editor */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #555;
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+/* This is the container for the CodeMirror instance */
+.cm-editor {
+    /* Removed flex-grow: 1; and height: 100% */
+    height: 12em; /* Fixed height at ~8 lines */
+}
+
+/* Ensure editor-section and preview-section grow vertically */
+.editor-section, .preview-section {
+    flex: 1; /* Take equal horizontal space */
+    background-color: #fff;
+    padding: 1rem 1.5rem 2rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0; /* Allow vertical shrinking if needed */
+    height: 520px;
+}
+
+.button-group {
+    text-align: center;
+    /* Removed padding-top: 1rem; as spacing is now handled by section padding-bottom */
+    flex-shrink: 0;
+    margin-top: auto; /* Pushes buttons to the bottom */
+}
+
+.button-group button {
+    padding: 0.3rem 0.8rem;
+    margin: 0 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s;
+}
+
+.button-group button:first-of-type {
+    background-color: #007bff;
+    color: white;
+}
+
+.button-group button:first-of-type:hover {
+    background-color: #0056b3;
+}
+
+.button-group button:last-of-type {
+    background-color: #6c757d;
+    color: white;
+}
+
+.button-group button:last-of-type:hover {
+    background-color: #5a6268;
+}
+
+.preview-content {
+    border: 1px solid #e0e0e0;
+    padding: 1rem;
+    background-color: #fdfdfd;
+    border-radius: 5px;
+    overflow-y: auto;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.error-message {
+    color: #dc3545;
+    text-align: center;
+    margin: 1rem 0;
+    flex-shrink: 0;
+}

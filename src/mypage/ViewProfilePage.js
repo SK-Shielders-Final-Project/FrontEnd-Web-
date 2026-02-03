@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
 import './ViewProfilePage.css';
+import { getCookie } from '../utils/cookie';
 
 const ViewProfilePage = () => {
     const [userData, setUserData] = useState(null);
@@ -12,7 +13,7 @@ const ViewProfilePage = () => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const userId = localStorage.getItem('userId');
+                const userId = getCookie('userId');
                 if (!userId) {
                     alert('로그인 정보가 없거나 유효하지 않습니다. 다시 로그인해주세요.');
                     navigate('/login');

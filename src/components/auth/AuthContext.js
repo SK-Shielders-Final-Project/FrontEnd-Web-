@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { logoutUser } from '../../auth/authUtils';
+import { getCookie, setCookie, removeCookie } from '../../utils/cookie';
 
 const AuthContext = createContext(null);
 
@@ -9,8 +10,8 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const storedUserId = localStorage.getItem('userId');
+        const token = getCookie('token');
+        const storedUserId = getCookie('userId');
         if (token && storedUserId) {
             setIsLoggedIn(true);
             setUserId(storedUserId);
@@ -19,9 +20,9 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = useCallback((token, refreshToken, id) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('userId', id);
+        setCookie('token', token, 1); // 1 day expiry
+        setCookie('refreshToken', refreshToken, 7); // 7 days expiry
+        setCookie('userId', id, 1); // 1 day expiry
         setIsLoggedIn(true);
         setUserId(id);
     }, []);

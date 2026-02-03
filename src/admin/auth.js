@@ -1,13 +1,15 @@
+import { getCookie, setCookie, removeCookie } from '../utils/cookie';
+
 const KEY = "admin_logged_in";
 
 export function isAdminLoggedIn() {
-  return localStorage.getItem(KEY) === "true";
+  return getCookie(KEY) === "true";
 }
 
 export function setAdminLoggedIn(value) {
-  localStorage.setItem(KEY, value ? "true" : "false");
+  setCookie(KEY, value ? "true" : "false", 1);
 }
 
 export function adminLogout() {
-  localStorage.removeItem(KEY);
+  removeCookie(KEY);
 }

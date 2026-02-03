@@ -24,17 +24,19 @@ export default function Sidebar() {
       React.createElement(NavLink, { to: "/admin/dashboard", style: getNavLinkStyle }, "대시보드"),
       React.createElement(NavLink, { to: "/admin/members", style: getNavLinkStyle }, "회원 정보 리스트 조회"),
       React.createElement(NavLink, { to: "/admin/inquiries", style: getNavLinkStyle }, "문의 사항 전체 조회"),
-      React.createElement(NavLink, { to: "/admin/bikes", style: getNavLinkStyle }, "자전거 리스트")
+      React.createElement(NavLink, { to: "/admin/bikes", style: getNavLinkStyle }, "자전거 리스트"),
+      React.createElement(NavLink, { to: "/admin/email-templates", style: getNavLinkStyle }, "이메일 템플릿 관리")
     )
   );
 }
 
 const styles = {
   aside: {
-    width: 260,
+    width: 180,
     padding: 14,
     borderRight: "1px solid #ddd",
     background: "#fff",
+    flexShrink: 0, // Prevent shrinking
   },
   title: { margin: "6px 0 12px" },
   menu: { display: "grid", gap: 10 },

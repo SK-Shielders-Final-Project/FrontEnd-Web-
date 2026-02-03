@@ -7,6 +7,7 @@ import {
   downloadFile,
 } from "../api/inquiryApi";
 import "./InquiriesPage.css";
+import { getCookie } from "../../utils/cookie";
 
 // 날짜 렌더링 형식 수정 (YYYY-MM-DD HH:mm:ss)
 const formatDate = (dateString) => {
@@ -17,7 +18,7 @@ const formatDate = (dateString) => {
 };
 
 export default function InquiriesPage() {
-  const adminLevel = Number(localStorage.getItem("adminLevel") ?? 1);
+  const adminLevel = Number(getCookie("adminLevel") ?? 1);
 
   const [list, setList] = useState([]);
   const [totalPages, setTotalPages] = useState(0);

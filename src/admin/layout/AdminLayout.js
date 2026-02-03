@@ -33,7 +33,7 @@ export default function AdminLayout(props) {
 
 const styles = {
   wrap: { display: "flex", minHeight: "100vh", background: "#fafafa" },
-  main: { flex: 1, padding: 16 },
+  main: { flex: 1, padding: 16, minWidth: 0 },
   topbar: {
     display: "flex",
     justifyContent: "space-between",
