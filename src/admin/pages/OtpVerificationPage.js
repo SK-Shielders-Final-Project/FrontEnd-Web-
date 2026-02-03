@@ -17,7 +17,7 @@ const OtpVerificationPage = () => {
 
         try {
             // 서버로 OTP 번호 전송
-            const response = await axios.post('/api/2fa/verify', { code: otp });
+            const response = await axios.post('/api/admin/2fa/verify', { code: otp });
 
             // [수정 포인트] 백엔드 응답 헤더의 'success' 값을 확인합니다.
             // 공격자가 Burp Suite로 response.data를 true로, 헤더를 success로 조작하면 이 조건문을 통과합니다.

@@ -12,7 +12,7 @@ const TwoFactorSetupPage = () => {
     useEffect(() => {
         const fetchQrCode = async () => {
             try {
-                const response = await axios.get('/api/2fa/generate-secret');
+                const response = await axios.get('/api/admin/2fa/generate-secret');
                 setQrCode(response.data.qrCode);
                 setManualKey(response.data.manualKey);
             } catch (err) {
