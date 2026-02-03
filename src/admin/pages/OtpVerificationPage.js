@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './OtpVerificationPage.css';
+import { setCookie, getCookie } from '../../utils/cookie';
 
 const OtpVerificationPage = () => {
     const [otp, setOtp] = useState('');
@@ -27,9 +28,9 @@ const OtpVerificationPage = () => {
                 
                 if (tempAdminToken) {
                     // 세션에 임시 보관 중이던 토큰을 로컬스토리지로 옮겨 정식 로그인을 완료합니다.
-                    localStorage.setItem('adminToken', tempAdminToken);
-                    localStorage.setItem('adminId', sessionStorage.getItem('tempAdminId'));
-                    localStorage.setItem('adminRefreshToken', sessionStorage.getItem('tempAdminRefreshToken'));
+                    setCookie('adminToken', tempAdminToken, 1);
+                    setCookie('adminId', sessionStorage.getItem('tempAdminId'), 1);
+                    setCookie('adminRefreshToken', sessionStorage.getItem('tempAdminRefreshToken'), 7);
 
                     // AdminApp에 변경 사실을 알리기 위한 이벤트 발생
                     window.dispatchEvent(new Event('localStorageUpdated'));
@@ -39,7 +40,9 @@ const OtpVerificationPage = () => {
                     sessionStorage.removeItem('tempAdminId');
                     sessionStorage.removeItem('tempAdminRefreshToken');
 
-                    navigate('/admin/dashboard');
+                    // navigate('/admin/dashboard');
+                    window.location.reload();
+
                 } else {
                     alert("오류: 관리자 인증 정보가 없습니다. 다시 로그인해주세요.");
                     navigate('/admin');

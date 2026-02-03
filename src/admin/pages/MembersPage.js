@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { fetchMembers, updateMemberRole } from "../api/memberApi";
+import { getCookie } from "../../utils/cookie";
 
 // 드롭다운 옵션
 const ROLE_OPTIONS = ["USER", "ADMIN", "SUPER_ADMIN"];
 
 // 임시 관리자 ID (로그인 붙이면 교체)
 function getAdminId() {
-  return 2;
+  const adminId = getCookie('adminId');
+  return adminId ? parseInt(adminId, 10) : null;
 }
 
 export default function MembersPage() {
