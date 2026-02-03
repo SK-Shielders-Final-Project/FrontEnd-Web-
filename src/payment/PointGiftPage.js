@@ -34,8 +34,6 @@ const PointGiftPage = () => {
       
       if (!aesKeyStr) throw new Error("세션 키가 만료되었습니다.");
 
-      console.log("🔑 저장된 키로 암호화 수행:", aesKeyStr);
-
       // 데이터 준비
       const payload = {
         senderName: myUsername,

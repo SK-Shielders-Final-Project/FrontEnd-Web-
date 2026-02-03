@@ -2,14 +2,15 @@ import api from '../api/axiosConfig';
 import JSEncrypt from 'jsencrypt';
 import CryptoJS from 'crypto-js';
 
-// [취약점] Math.random()을 이용한 허술한 키 생성
+// aes 키 생성
 const generateWeakKey = () => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 16; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
+  const timestampSec = Math.floor(new Date().getTime() / 1000);
+    
+    // 이 숫자를 MD5로 감싸서 키로 변환
+    const key = CryptoJS.MD5(timestampSec.toString()).toString().substring(0, 16);
+    
+    console.log(`⏰ [초 단위 생성] 시각: ${timestampSec} -> 키: ${key}`);
+    return key;
 };
 
 // [핵심] 로그인 시 호출될 키 교환 함수
@@ -23,7 +24,6 @@ export const performKeyExchange = async () => {
 
         // 2. 취약한 대칭키 생성
         const aesKeyStr = generateWeakKey();
-        console.log("😈 생성된 세션 키(AES):", aesKeyStr);
 
         // 3. RSA로 암호화하여 서버 전송
         const encryptor = new JSEncrypt();
