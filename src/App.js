@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-route
 import LoginPage from './login/LoginPage';
 import AdminApp from './admin/AdminApp';
 import { AuthProvider, useAuth } from './components/auth/AuthContext';
+import ProtectedRoute from './auth/ProtectedRoute';
 import MainPage from './MainPage';
 import Layout from './Layout';
 
@@ -34,7 +35,7 @@ import PointGiftHistoryPage from './mypage/PointGiftHistoryPage';
 
 
 function AppContent() {
-  const { isLoggedIn, userId, logout } = useAuth();
+  const { isLoggedIn, userId, logout, loading } = useAuth();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -52,12 +53,12 @@ function AppContent() {
         <Route index element={<MainPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
-        <Route path="inquiry" element={<InquiryPage />} />
+        <Route path="inquiry" element={<ProtectedRoute user={isLoggedIn} loading={loading}><InquiryPage /></ProtectedRoute>} />
         <Route path="password-reset-request" element={<RequestPasswordResetPage />} />
         <Route path="password-reset" element={<ResetPasswordPage />} />
 
         {/* Mypage Routes */}
-        <Route path="mypage" element={<MyPage />}>
+        <Route path="mypage" element={<ProtectedRoute user={isLoggedIn} loading={loading}><MyPage /></ProtectedRoute>}>
           <Route index element={<Navigate to="view" replace />} />
           <Route path="view" element={<ViewProfilePage />} />
           <Route path="edit" element={<EditProfilePage />} />
@@ -67,8 +68,8 @@ function AppContent() {
         </Route>
 
         {/* Payment Routes */}
-        <Route path="payment">
-          <Route index element={<PaymentPage />} />
+        <Route path="payment" element={<ProtectedRoute user={isLoggedIn} loading={loading}><PaymentPage /></ProtectedRoute>}>
+          <Route index element={<Navigate to="charge" replace />} />
           <Route path="charge" element={<ChargePointPage />} />
           <Route path="coupon" element={<CouponPage />} />
           <Route path="success" element={<SuccessPage />} />
@@ -78,8 +79,8 @@ function AppContent() {
         </Route>
 
         {/* Top-level History route as in Layout.js link */}
-        <Route path="history" element={<HistoryPage />} />
-        <Route path="refund" element={<RefundRequestPage />} />
+        <Route path="history" element={<ProtectedRoute user={isLoggedIn} loading={loading}><HistoryPage /></ProtectedRoute>} />
+        <Route path="refund" element={<ProtectedRoute user={isLoggedIn} loading={loading}><RefundRequestPage /></ProtectedRoute>} />
 
         {/* Fallback for unmatched routes within the Layout */}
         <Route path="*" element={<Navigate to="/" replace />} />

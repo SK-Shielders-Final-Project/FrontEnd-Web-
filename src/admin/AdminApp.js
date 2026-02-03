@@ -70,6 +70,7 @@ export default function AdminApp() {
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} /> {/* Catch-all for logged in */}
           </>
         )}
+      </Route>
       <Route path="/" element={<AdminLayout onLogout={handleAdminLogout} />}>
         {/* Default route for /admin, redirect to dashboard if logged in */}
         <Route index element={<Navigate to="dashboard" replace />} />
