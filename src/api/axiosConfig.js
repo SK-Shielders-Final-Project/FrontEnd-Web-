@@ -2,7 +2,12 @@ import axios from 'axios';
 import { refreshAccessToken } from './authApi';
 import { logoutUser, logoutAdmin } from '../auth/authUtils';
 
-const apiClient = axios.create();
+const apiClient = axios.create({
+  withCredentials: true, 
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 apiClient.interceptors.request.use(
   (config) => {
