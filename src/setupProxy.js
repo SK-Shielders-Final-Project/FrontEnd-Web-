@@ -29,7 +29,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:8080',
+      target: 'http://localhost:8082',
       changeOrigin: true,
       
       // [핵심 해결책] 잘려나간 '/api'를 강제로 다시 붙입니다.

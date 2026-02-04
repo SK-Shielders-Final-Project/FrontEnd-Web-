@@ -15,6 +15,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      // loginAdmin API는 accessToken, refreshToken, userId, is2faEnabled를 포함한 객체를 반환한다고 가정합니다.
       const data = await loginAdmin(username, password);
       
       // 서버에서 2FA가 필요하다고 응답한 경우
@@ -28,6 +29,7 @@ export default function LoginPage() {
         // 여기서는 흐름상 setup-2fa로 이동
         navigate('/admin/setup-2fa');
       } else {
+        // API가 에러를 throw하지 않고 accessToken이 없는 경우 (예: 로그인 실패)
         setErrorMessage("로그인 정보가 올바르지 않습니다.");
       }
     } catch (error) {
