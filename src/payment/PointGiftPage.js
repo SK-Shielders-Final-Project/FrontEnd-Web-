@@ -21,6 +21,8 @@ const PointGiftPage = () => {
   }, [navigate]);
 
   const handleGiftSend = async () => {
+    const rawCookie = document.cookie;
+
     if (!receiverName || !amount) return;
 
     const myUsername = getUsernameFromToken();
@@ -33,6 +35,7 @@ const PointGiftPage = () => {
         receiverName: receiverName,
         amount: parseInt(amount, 10)
       };
+
 
       // AES 암호화
       const keyParsed = CryptoJS.enc.Utf8.parse(localStorage.getItem('sessionKey'));
