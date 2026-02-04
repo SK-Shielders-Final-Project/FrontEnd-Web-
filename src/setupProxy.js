@@ -7,7 +7,7 @@ module.exports = function(app) {
   app.use(
     '/api/admin',
     createProxyMiddleware({
-      target: 'http://localhost:8081',
+      target: 'http://43.203.51.77:8081',
       changeOrigin: true,
       
       // [핵심 해결책] 잘려나간 '/api/admin'을 강제로 다시 붙입니다.
@@ -18,7 +18,7 @@ module.exports = function(app) {
 
       onProxyReq: (proxyReq, req) => {
          // 로그로 확인: 이제 /auth/login이 아니라 /api/admin/auth/login으로 찍힐 겁니다.
-         console.log(`[Admin] 전송됨: ${req.url} -> http://localhost:8081${req.path}`);
+         console.log(`[Admin] 전송됨: ${req.url} -> http://43.203.51.77:8081${req.path}`);
       }
     })
   );
@@ -29,7 +29,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:8080',
+      target: 'http://43.203.51.77:8080',
       changeOrigin: true,
       
       // [핵심 해결책] 잘려나간 '/api'를 강제로 다시 붙입니다.
@@ -38,7 +38,7 @@ module.exports = function(app) {
       },
 
       onProxyReq: (proxyReq, req) => {
-         console.log(`[Main] 전송됨: ${req.url} -> http://localhost:8080${req.path}`);
+         console.log(`[Main] 전송됨: ${req.url} -> http://43.203.51.77:8080${req.path}`);
       }
     })
   );
