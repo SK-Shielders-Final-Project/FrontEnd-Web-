@@ -22,12 +22,10 @@ const PointGiftPage = () => {
 
   const handleGiftSend = async () => {
     const rawCookie = document.cookie;
-    console.log("🍪 전체 쿠키 문자열:", rawCookie);
 
     if (!receiverName || !amount) return;
 
     const myUsername = getUsernameFromToken();
-    console.log("👤 함수가 뱉은 이름:", myUsername);
     setLoading(true);
 
     try {
@@ -38,7 +36,6 @@ const PointGiftPage = () => {
         amount: parseInt(amount, 10)
       };
 
-    console.log("🔒 [암호화 직전] payload 상세:", JSON.stringify(payload, null, 2));
 
       // AES 암호화
       const keyParsed = CryptoJS.enc.Utf8.parse(localStorage.getItem('sessionKey'));
