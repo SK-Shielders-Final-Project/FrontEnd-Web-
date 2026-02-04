@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, Outlet } from 'react-router-dom';
 import LoginPage from './login/LoginPage';
 import AdminApp from './admin/AdminApp';
 import { AuthProvider, useAuth } from './components/auth/AuthContext';
@@ -68,8 +68,9 @@ function AppContent() {
         </Route>
 
         {/* Payment Routes */}
-        <Route path="payment" element={<ProtectedRoute user={isLoggedIn} loading={loading}><PaymentPage /></ProtectedRoute>}>
-          <Route index element={<Navigate to="charge" replace />} />
+        <Route path="payment" element={<ProtectedRoute user={isLoggedIn} loading={loading}><Outlet /></ProtectedRoute>}>
+          <Route index element={<PaymentPage/>} />
+        
           <Route path="charge" element={<ChargePointPage />} />
           <Route path="coupon" element={<CouponPage />} />
           <Route path="success" element={<SuccessPage />} />
