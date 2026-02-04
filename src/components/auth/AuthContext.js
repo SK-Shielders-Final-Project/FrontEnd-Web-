@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { logoutUser } from '../../auth/authUtils';
 import { getCookie, setCookie, removeCookie } from '../../utils/cookie';
 
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
