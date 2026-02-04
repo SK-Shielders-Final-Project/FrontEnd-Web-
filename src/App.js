@@ -34,10 +34,12 @@ import PointGiftHistoryPage from './mypage/PointGiftHistoryPage';
 
 
 
-function AppContent() {
+function MainRoutes({ initialData }) {
   const { isLoggedIn, userId, logout, loading } = useAuth();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const serverState = initialData || (typeof window !== 'undefined' ? window.__PRELOADED_STATE__ : {});
 
   const user = isLoggedIn ? { loggedIn: isLoggedIn, userId: userId } : null;
 
@@ -94,12 +96,10 @@ function AppContent() {
   );
 }
 
-function App() {
+function App({ initialData }) {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <MainRoutes initialData={initialData} />
     </AuthProvider>
   );
 }
