@@ -15,15 +15,6 @@
     /* Removed box-shadow and border-radius as it's now full width */
 }
 
-h1 {
-    text-align: left;
-    color: #333;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #eee;
-    flex-shrink: 0;
-}
-
 .template-selector {
     display: flex;
     align-items: center;
