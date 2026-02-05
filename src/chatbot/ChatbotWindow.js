@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../api/axiosConfig";
-import { getCookie } from "../auth/authUtils"; // getCookie import 추가
+import { getCookie } from "../auth/authUtils";
 
-function ChatbotWindow({ onClose }) { // user prop 제거
+function ChatbotWindow({ onClose }) {
   const [messages, setMessages] = useState([
     { sender: "bot", text: "안녕하세요 😊 무엇을 도와드릴까요?" }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState(null); // userId를 상태로 관리
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const storedUserId = getCookie('userId'); // 쿠키에서 userId 가져오기
+    const storedUserId = getCookie('userId');
     setUserId(storedUserId);
   }, []);
 
   const sendMessage = async () => {
-    // userId가 없으면 여기서 종료 (에러 방지)
     if (!userId) {
       setMessages((prev) => [
         ...prev,
@@ -30,22 +29,26 @@ function ChatbotWindow({ onClose }) { // user prop 제거
     const userText = input;
     setInput("");
 
-    // 1) 사용자 메시지 먼저 화면에 추가
     setMessages((prev) => [...prev, { sender: "user", text: userText }]);
 
     try {
       setLoading(true);
 
-      // 2) 백엔드 호출
-      const res = await apiClient.post("/api/chat", {
-        userId: userId,
-        message: { content: userText }
-      });
+      /**
+       * 💡 수정 포인트: 백엔드 ChatRequestDto 구조에 맞춤
+       * 구조: { message: { role, user_id, content } }
+       */
+      const payload = {
+        message: {
+          role: "user",
+          user_id: Number(userId), // 백엔드가 Long(숫자) 타입을 기대하므로 변환
+          content: userText
+        }
+      };
 
-      // axios는 res.data로 바로 데이터에 접근
-      const data = res.data; // { userId, assistantMessage, model }
+      const res = await apiClient.post("/api/chat", payload);
+      const data = res.data;
 
-      // 3) 봇 응답 화면에 추가
       setMessages((prev) => [
         ...prev,
         { sender: "bot", text: data.assistantMessage || "(응답 없음)" }
