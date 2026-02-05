@@ -6,68 +6,65 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
-    setIsLoading(true);
-
     try {
+      // 1. 로그인 실행 (백엔드에서 is2faEnabled를 포함해서 보내줘야 함)
       const data = await loginAdmin(username, password);
+      console.log("로그인 응답:", data);
       
-      // 서버에서 2FA가 필요하다고 응답한 경우
-      if (data.requires2FA) {
-        // 임시 세션에 저장 (아직 정식 로그인이 아님)
-        sessionStorage.setItem('tempAdminToken', data.tempAccessToken);
-        sessionStorage.setItem('tempAdminId', data.userId);
-        sessionStorage.setItem('tempAdminRefreshToken', data.tempRefreshToken);
-        
-        // 시나리오에 따라: 최초 등록이면 setup-2fa, 이미 등록됐으면 otp-verify
-        // 여기서는 흐름상 setup-2fa로 이동
-        navigate('/admin/setup-2fa');
+      // LocalStorage에 임시 저장 (요구 사항 1)
+      localStorage.setItem("token", data.tempAccessToken);
+      localStorage.setItem("refreshToken", data.tempRefreshToken);
+      localStorage.setItem("adminId", data.userId);
+      
+      const userId = data.userId;
+      sessionStorage.setItem('tempAdminId', userId);
+
+      // 2. 로그인 응답 데이터(data) 내의 is2faEnabled 값으로 즉시 분기
+      if (data.is2faEnabled === true) {
+        console.log("2FA 설정 완료 사용자 -> 인증 페이지로 이동");
+        navigate('/admin/otp-verify', { state: { is2faEnabled: true } });
       } else {
-        setErrorMessage("로그인 정보가 올바르지 않습니다.");
+        console.log("2FA 미설정 사용자 -> QR 설정 페이지로 이동");
+        navigate('/admin/setup-2fa', { state: { is2faEnabled: false } });
       }
+
     } catch (error) {
-      console.error("Admin login error:", error);
-      const message = error.response?.data?.message || "로그인 중 오류가 발생했습니다.";
-      setErrorMessage(message);
-    } finally {
-      setIsLoading(false);
+      console.error("로그인 에러:", error);
+      setErrorMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
   };
 
   return (
     <div style={styles.wrap}>
-      <h2 style={{ marginTop: 0 }}>관리자 로그인 (1단계)</h2>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <input
-          placeholder="아이디"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={styles.input}
+      <h2 style={{ textAlign: 'center', marginBottom: 20 }}>관리자 로그인</h2>
+      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
+        <input 
+          placeholder="아이디" 
+          value={username} 
+          onChange={(e) => setUsername(e.target.value)} 
+          style={styles.input} 
         />
-        <input
-          placeholder="비밀번호"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
+        <input 
+          placeholder="비밀번호" 
+          type="password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          style={styles.input} 
         />
         {errorMessage && <div style={styles.err}>{errorMessage}</div>}
-        <button type="submit" style={styles.btn} disabled={isLoading}>
-          {isLoading ? '다음 단계로' : '로그인'}
-        </button>
+        <button type="submit" style={styles.btn}>로그인</button>
       </form>
     </div>
   );
 }
 
 const styles = {
-  wrap: { maxWidth: 380, margin: "80px auto", padding: 18, border: "1px solid #ddd", borderRadius: 10, background: "#fff" },
-  input: { padding: "10px 12px", borderRadius: 8, border: "1px solid #ccc", outline: "none" },
-  btn: { padding: "10px 12px", borderRadius: 8, border: "1px solid #333", background: "#111", color: "#fff", cursor: "pointer" },
-  err: { color: "crimson", fontSize: 13 },
+  wrap: { maxWidth: 380, margin: "100px auto", padding: 25, border: "1px solid #eee", borderRadius: 12, boxShadow: "0 4px 10px rgba(0,0,0,0.1)" },
+  input: { padding: "12px", borderRadius: 8, border: "1px solid #ddd", fontSize: 14 },
+  btn: { padding: "12px", borderRadius: 8, border: "none", background: "#111", color: "#fff", cursor: "pointer", fontSize: 15, fontWeight: "bold" },
+  err: { color: "red", fontSize: 13, textAlign: 'center' },
 };

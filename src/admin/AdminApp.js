@@ -20,7 +20,7 @@ export default function AdminApp() {
   // 쿠키 존재 여부로 로그인 상태 관리
   const [adminLoggedIn, setAdminLoggedIn] = useState(!!getCookie('adminToken'));
 
-  const handleAdminLoginSuccess = (token, userId, refreshToken) => {
+  const handleAdminLoginSuccess = (token, userId, refreshToken, is2faEnabled) => {
     const decodedToken = jwtDecode(token);
     const adminLevel = decodedToken.level; 
 
@@ -30,6 +30,15 @@ export default function AdminApp() {
     setCookie('adminLevel', adminLevel, 1);
     
     setAdminLoggedIn(true);
+
+    // 2FA 상태에 따라 리다이렉트 처리
+    if (is2faEnabled) {
+      // 2FA가 활성화되어 있으면, OTP 인증 페이지로 이동
+      navigate('/admin/otp-verify', { state: { is2faEnabled: true } });
+    } else {
+      // 2FA가 비활성화 상태이면, 2FA 설정 페이지로 이동
+      navigate('/admin/setup-2fa', { state: { is2faEnabled: false } });
+    }
     // 로그인 직후에는 2FA 설정을 먼저 하도록 유도하거나 대시보드로 이동
     navigate('/admin/dashboard');
   };

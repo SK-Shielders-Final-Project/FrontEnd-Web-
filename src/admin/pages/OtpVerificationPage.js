@@ -1,83 +1,102 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import './OtpVerificationPage.css';
-import { setCookie, getCookie } from '../../utils/cookie';
+import { setCookie } from '../../utils/cookie';
 
 const OtpVerificationPage = () => {
     const [otp, setOtp] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    // LoginPage에서 전달받은 2FA 등록 여부 (최초면 false, 아니면 true)
+    const is2faEnabled = location.state?.is2faEnabled;
 
     const handleOtpSubmit = async (e) => {
         e.preventDefault();
-        if (!otp) {
-            alert("OTP를 입력해주세요.");
+        const userId = sessionStorage.getItem('tempAdminId');
+
+        if (!otp || otp.length < 6) {
+            alert("6자리 인증번호를 입력해주세요.");
             return;
         }
 
+        // 최초 등록이면 verify-initial, 이미 등록됐으면 verify 호출
+        const url = is2faEnabled ? '/api/admin/2fa/verify' : '/api/admin/2fa/verify-initial';
+
         try {
-            // 서버로 OTP 번호 전송
-            const response = await axios.post('/api/admin/2fa/verify', { code: otp });
+            const response = await axios.post(url, { code: otp, userId: userId });
 
-            // [수정 포인트] 백엔드 응답 헤더의 'success' 값을 확인합니다.
-            // 공격자가 Burp Suite로 response.data를 true로, 헤더를 success로 조작하면 이 조건문을 통과합니다.
-            if (response.data === true && response.headers['x-2fa-status'] === 'success') {
-                alert("인증 성공! 대시보드로 이동합니다.");
-
-                const tempAdminToken = sessionStorage.getItem('tempAdminToken');
+            // 백엔드 응답 헤더 또는 데이터 성공 여부 확인
+            if (response.headers['x-2fa-status'] === 'success' || response.data.success === true) {
+                alert("인증에 성공하였습니다.");
                 
-                if (tempAdminToken) {
-                    // 세션에 임시 보관 중이던 토큰을 로컬스토리지로 옮겨 정식 로그인을 완료합니다.
-                    setCookie('adminToken', tempAdminToken, 1);
-                    setCookie('adminId', sessionStorage.getItem('tempAdminId'), 1);
-                    setCookie('adminRefreshToken', sessionStorage.getItem('tempAdminRefreshToken'), 7);
+                // LocalStorage에서 임시 값 가져오기
+                const tempAccessToken = localStorage.getItem("token");
+                const tempRefreshToken = localStorage.getItem("refreshToken");
+                const tempAdminId = localStorage.getItem("adminId");
 
-                    // AdminApp에 변경 사실을 알리기 위한 이벤트 발생
-                    window.dispatchEvent(new Event('localStorageUpdated'));
-
-                    // 사용이 끝난 임시 토큰은 삭제합니다.
-                    sessionStorage.removeItem('tempAdminToken');
-                    sessionStorage.removeItem('tempAdminId');
-                    sessionStorage.removeItem('tempAdminRefreshToken');
-
-                    // navigate('/admin/dashboard');
-                    window.location.reload();
-
-                } else {
-                    alert("오류: 관리자 인증 정보가 없습니다. 다시 로그인해주세요.");
-                    navigate('/admin');
+                // 가져온 값을 setCookie 함수를 사용하여 쿠키에 저장
+                if (tempAccessToken) {
+                    setCookie('adminToken', tempAccessToken, 1); // 1일 유효
                 }
+                if (tempRefreshToken) {
+                    setCookie('adminRefreshToken', tempRefreshToken, 7); // 7일 유효
+                }
+                if (tempAdminId) {
+                    setCookie('adminId', tempAdminId, 1); // 1일 유효
+                }
+                
+                // LocalStorage의 임시 값들 삭제
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("adminId");
+                
+                // 임시 세션 데이터 정리
+                sessionStorage.removeItem('tempAdminId');
+                
+                // 대시보드로 리다이렉트
+                window.location.href = '/admin/dashboard';
             } else {
-                 // 서버가 200 OK를 줬더라도 헤더값이 success가 아니면 실패 처리
-                 alert("인증 실패: 유효하지 않은 인증 상태입니다.");
+                alert("인증 코드가 일치하지 않습니다.");
             }
         } catch (error) {
-            // [해킹 시나리오] 틀린 번호 입력 시 서버는 401 에러를 던지고 이 catch 문으로 들어옵니다.
-            // 공격자는 이 시점에서 401 응답을 가로채 200 OK와 success 헤더로 변조하여 try 구문으로 돌려보냅니다.
-            console.error("Verification Error:", error);
-            alert("인증 실패! 번호를 다시 확인하거나 시스템 관리자에게 문의하세요.");
+            console.error("OTP Verification Error:", error);
+            alert("인증 실패! 코드를 다시 확인하거나 관리자에게 문의하세요.");
         }
     };
 
     return (
-        <div className="otp-verification-container">
-            <div className="otp-form-card">
-                <h2>2-Factor Authentication</h2>
-                <p>Google Authenticator 앱의 6자리 코드를 입력하세요.</p>
-                <form onSubmit={handleOtpSubmit} className="otp-form">
+        <div style={styles.container}>
+            <div style={styles.card}>
+                <h2 style={styles.title}>2단계 OTP 인증</h2>
+                <p style={styles.instruction}>
+                    Google Authenticator 앱에 표시된<br />
+                    6자리 인증 코드를 입력하세요.
+                </p>
+                <form onSubmit={handleOtpSubmit} style={styles.form}>
                     <input
                         type="text"
                         value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="6-Digit Code"
+                        onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                        placeholder="000000"
                         maxLength="6"
-                        className="otp-input"
+                        style={styles.input}
                     />
-                    <button type="submit" className="otp-verify-btn">인증하기</button>
+                    <button type="submit" style={styles.button}>인증 및 로그인</button>
                 </form>
             </div>
         </div>
     );
+};
+
+const styles = {
+    container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f5f5f5' },
+    card: { padding: '40px', borderRadius: '12px', backgroundColor: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', textAlign: 'center', width: '100%', maxWidth: '400px' },
+    title: { marginBottom: '10px', fontSize: '24px', color: '#333' },
+    instruction: { marginBottom: '30px', color: '#666', lineHeight: '1.5' },
+    form: { display: 'flex', flexDirection: 'column', gap: '20px' },
+    input: { padding: '15px', fontSize: '24px', textAlign: 'center', letterSpacing: '5px', borderRadius: '8px', border: '1px solid #ddd', outline: 'none' },
+    button: { padding: '15px', fontSize: '16px', backgroundColor: '#111', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }
 };
 
 export default OtpVerificationPage;
