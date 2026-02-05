@@ -30,9 +30,26 @@ const OtpVerificationPage = () => {
             if (response.headers['x-2fa-status'] === 'success' || response.data.success === true) {
                 alert("인증에 성공하였습니다.");
                 
-                // 최종 인증 토큰 쿠키 저장
-                setCookie('adminToken', response.data.accessToken, 1);
-                setCookie('adminId', response.data.userId, 1);
+                // LocalStorage에서 임시 값 가져오기
+                const tempAccessToken = localStorage.getItem("token");
+                const tempRefreshToken = localStorage.getItem("refreshToken");
+                const tempAdminId = localStorage.getItem("adminId");
+
+                // 가져온 값을 setCookie 함수를 사용하여 쿠키에 저장
+                if (tempAccessToken) {
+                    setCookie('adminToken', tempAccessToken, 1); // 1일 유효
+                }
+                if (tempRefreshToken) {
+                    setCookie('adminRefreshToken', tempRefreshToken, 7); // 7일 유효
+                }
+                if (tempAdminId) {
+                    setCookie('adminId', tempAdminId, 1); // 1일 유효
+                }
+                
+                // LocalStorage의 임시 값들 삭제
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("adminId");
                 
                 // 임시 세션 데이터 정리
                 sessionStorage.removeItem('tempAdminId');

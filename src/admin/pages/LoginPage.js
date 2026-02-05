@@ -15,6 +15,11 @@ export default function LoginPage() {
       const data = await loginAdmin(username, password);
       console.log("로그인 응답:", data);
       
+      // LocalStorage에 임시 저장 (요구 사항 1)
+      localStorage.setItem("token", data.tempAccessToken);
+      localStorage.setItem("refreshToken", data.tempRefreshToken);
+      localStorage.setItem("adminId", data.userId);
+      
       const userId = data.userId;
       sessionStorage.setItem('tempAdminId', userId);
 
