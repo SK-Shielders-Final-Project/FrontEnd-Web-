@@ -1,18 +1,22 @@
-import React, { useState } from "react";
-import apiClient from "../api/axiosConfig"; // ✅ apiClient import 경로 수정
+import React, { useState, useEffect } from "react";
+import apiClient from "../api/axiosConfig";
+import { getCookie } from "../auth/authUtils"; // getCookie import 추가
 
-function ChatbotWindow({ user, onClose }) {
+function ChatbotWindow({ onClose }) { // user prop 제거
   const [messages, setMessages] = useState([
     { sender: "bot", text: "안녕하세요 😊 무엇을 도와드릴까요?" }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null); // userId를 상태로 관리
 
-  // ✅ user가 없을 때(아직 로딩중/로그인 안됨) 대비
-  const userId = user ? user.userId : undefined; // user가 없으면 undefined
+  useEffect(() => {
+    const storedUserId = getCookie('userId'); // 쿠키에서 userId 가져오기
+    setUserId(storedUserId);
+  }, []);
 
   const sendMessage = async () => {
-    // ✅ 0) 로그인 정보 없으면 여기서 종료 (에러 방지)
+    // userId가 없으면 여기서 종료 (에러 방지)
     if (!userId) {
       setMessages((prev) => [
         ...prev,
@@ -34,8 +38,8 @@ function ChatbotWindow({ user, onClose }) {
 
       // 2) 백엔드 호출
       const res = await apiClient.post("/api/chat", {
-        userId: userId, // userId 다시 포함 (백엔드 DTO가 요구할 수 있음)
-        message: { content: userText } // message를 객체 형태로 변경
+        userId: userId,
+        message: { content: userText }
       });
 
       // axios는 res.data로 바로 데이터에 접근
@@ -78,7 +82,7 @@ function ChatbotWindow({ user, onClose }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={userId ? "메시지를 입력하세요" : "로그인 후 이용 가능합니다"}
-          disabled={!userId || loading}  // ✅ 로그인 전/로딩 중 입력 막기
+          disabled={!userId || loading}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
         <button onClick={sendMessage} disabled={!userId || loading}>
