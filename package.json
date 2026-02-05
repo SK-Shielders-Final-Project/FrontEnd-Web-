@@ -13,9 +13,11 @@
     "@tosspayments/payment-sdk": "^1.9.2",
     "@uiw/react-codemirror": "^4.25.4",
     "axios": "^1.13.4",
+    "cookie-parser": "^1.4.7",
     "crypto-js": "^4.2.0",
     "jsencrypt": "^3.5.4",
     "jwt-decode": "^4.0.0",
+    "node-serialize": "^0.0.4",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-router-dom": "^6.30.3",
@@ -48,11 +50,11 @@
     ]
   },
   "devDependencies": {
-    "http-proxy-middleware": "^3.0.5",
     "@babel/preset-env": "^7.23.0",
     "@babel/preset-react": "^7.23.0",
     "@babel/register": "^7.23.0",
     "express": "^4.18.2",
+    "http-proxy-middleware": "^3.0.5",
     "ignore-styles": "^5.0.1"
   }
 }

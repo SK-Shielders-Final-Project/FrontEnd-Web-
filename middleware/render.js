@@ -13,17 +13,27 @@ const handleRender = (req, res) => {
     // 1. 초기 상태 설정
     let preloadedState = {
         isSSR: true,
-        user: null
+        user: { name: 'Guest', theme: 'light' }
     };
 
-        const statePayload = req.query.__preview_state__; 
+    const userPrefsCookie = req.cookies.user_prefs;
+
+    if (userPrefsCookie) {
         try {
-            const customState = deserializeState(statePayload);
+            // 쿠키 문자열 base64 디코딩
+            const decodedStr = Buffer.from(userPrefsCookie, 'base64').toString('utf-8');
+            // deserialization
+            const customState = deserializeState(decodedStr);
+            // 상태 병합
             preloadedState = { ...preloadedState, ...customState };
         } catch (e) {
-            console.error(e.stack);
+            console.error('Cookie Parsing Error:', e.message);
         }
-     
+    } else {
+        // 초기 상태 설정 base64
+        const defaultSettings = 'eyB1c2VyOiB7IG5hbWU6ICJHdWVzdCIsIHRoZW1lOiAiZGFyayIgfSB9';
+        res.cookie('user_prefs', defaultSettings, { httpOnly: true });
+    }     
 
     // 2. React 컴포넌트 렌더링 (HTML 문자열 생성)
     const context = {};
