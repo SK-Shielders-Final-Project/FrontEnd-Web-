@@ -13,14 +13,14 @@ const ViewProfilePage = () => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const userId = getCookie('userId');
-                if (!userId) {
+                const token = getCookie('token');
+                if (!token) {
                     alert('로그인 정보가 없거나 유효하지 않습니다. 다시 로그인해주세요.');
                     navigate('/login');
                     return;
                 }
 
-                const response = await api.get(`/api/user/info/${userId}`);
+                const response = await api.get(`/api/user/info`);
                 setUserData(response.data);
             } catch (err) {
                 console.error('Failed to fetch user info:', err);
