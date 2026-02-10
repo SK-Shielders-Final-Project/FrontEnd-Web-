@@ -8,7 +8,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 300000, // ✅ 여기에 추가! 이제 모든 apiClient 요청은 5분간 기다립니다.
+  timeout: 3000000, // ✅ 여기에 추가! 이제 모든 apiClient 요청은 50분간 기다립니다.
 });
 
 // ... 아래 인터셉터 로직은 그대로 유지 ...
