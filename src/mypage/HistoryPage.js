@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom'; // useSearchParams import 필수
 import './HistoryPage.css';
 import api from '../api/axiosConfig';
+import PaymentDetailModal from '../payment/PaymentDetailModal';
 
 const HistoryPage = () => {
   const navigate = useNavigate(); 
@@ -12,6 +13,8 @@ const HistoryPage = () => {
   const [paymentList, setPaymentList] = useState([]);
   const [usageList, setUsageList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null); // State for selected payment ID
 
   const [inputStartDate, setInputStartDate] = useState(searchParams.get('startDate') || '');
   const [inputEndDate, setInputEndDate] = useState(searchParams.get('endDate') || '');
@@ -86,9 +89,29 @@ const HistoryPage = () => {
     });
   };
 
-  // [Action] 아이템 클릭 -> /refund 페이지로 이동
+  // [Action] 아이템 클릭 -> 모달 열기
   const handleItemClick = (item) => {
+    // 이미 취소된 건은 모달을 열지 않음
     if (item.status === 'CANCELED') return;
+    // item.orderid가 존재하는지 확인
+    if (!item.paymentId) {
+      console.error("Error: Payment item Order ID is missing.", item);
+      alert("결제 정보를 불러올 수 없습니다. 다시 시도해 주세요.");
+      return;
+    }
+    setSelectedPaymentId(item.paymentId);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPaymentId(null);
+  };
+
+  // 모달에서 호출될 환불 처리 함수
+  const handleRefund = (paymentId) => {
+    const item = paymentList.find(p => p.id === paymentId);
+    if (!item) return;
 
     let confirmMsg = "해당 결제 건에 대해 환불을 진행하시겠습니까?";
     if (item.status === 'PARTIAL_CANCELED') {
@@ -96,6 +119,7 @@ const HistoryPage = () => {
     }
 
     if (window.confirm(confirmMsg)) {
+      handleCloseModal(); // 모달 닫기
       navigate('/refund', { state: { targetItem: item } });
     }
   };
@@ -188,9 +212,7 @@ const HistoryPage = () => {
                         <div className="card-right">
                           <div className="amount">-{item.amount.toLocaleString()} 원</div>
                           {renderStatusBadge(item.status)}
-                          {!isFullyCanceled && (
-                            <div style={{fontSize:'11px', color:'#999', marginTop:'4px'}}>클릭하여 환불</div>
-                          )}
+                          
                         </div>
                       </div>
                     );
@@ -230,6 +252,16 @@ const HistoryPage = () => {
           </>
         )}
       </div>
+
+      {/* Payment Detail Modal */}
+      {isModalOpen && (
+        <PaymentDetailModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          paymentId={selectedPaymentId}
+          onRefund={handleRefund}
+        />
+      )}
     </div>
   );
 };

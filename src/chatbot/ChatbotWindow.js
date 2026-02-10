@@ -1,18 +1,21 @@
-import React, { useState } from "react";
-import apiClient from "../api/axiosConfig"; // ✅ apiClient import 경로 수정
+import React, { useState, useEffect } from "react";
+import apiClient from "../api/axiosConfig";
+import { getCookie } from "../auth/authUtils";
 
-function ChatbotWindow({ user, onClose }) {
+function ChatbotWindow({ onClose }) {
   const [messages, setMessages] = useState([
     { sender: "bot", text: "안녕하세요 😊 무엇을 도와드릴까요?" }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
 
-  // ✅ user가 없을 때(아직 로딩중/로그인 안됨) 대비
-  const userId = user ? user.userId : undefined; // user가 없으면 undefined
+  useEffect(() => {
+    const storedUserId = getCookie('userId');
+    setUserId(storedUserId);
+  }, []);
 
   const sendMessage = async () => {
-    // ✅ 0) 로그인 정보 없으면 여기서 종료 (에러 방지)
     if (!userId) {
       setMessages((prev) => [
         ...prev,
@@ -26,22 +29,26 @@ function ChatbotWindow({ user, onClose }) {
     const userText = input;
     setInput("");
 
-    // 1) 사용자 메시지 먼저 화면에 추가
     setMessages((prev) => [...prev, { sender: "user", text: userText }]);
 
     try {
       setLoading(true);
 
-      // 2) 백엔드 호출
-      const res = await apiClient.post("/api/chat", {
-        userId: userId, // userId 다시 포함 (백엔드 DTO가 요구할 수 있음)
-        message: { content: userText } // message를 객체 형태로 변경
-      });
+      /**
+       * 💡 수정 포인트: 백엔드 ChatRequestDto 구조에 맞춤
+       * 구조: { message: { role, user_id, content } }
+       */
+      const payload = {
+        message: {
+          role: "user",
+          user_id: Number(userId), // 백엔드가 Long(숫자) 타입을 기대하므로 변환
+          content: userText
+        }
+      };
 
-      // axios는 res.data로 바로 데이터에 접근
-      const data = res.data; // { userId, assistantMessage, model }
+      const res = await apiClient.post("/api/chat", payload);
+      const data = res.data;
 
-      // 3) 봇 응답 화면에 추가
       setMessages((prev) => [
         ...prev,
         { sender: "bot", text: data.assistantMessage || "(응답 없음)" }
@@ -78,7 +85,7 @@ function ChatbotWindow({ user, onClose }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={userId ? "메시지를 입력하세요" : "로그인 후 이용 가능합니다"}
-          disabled={!userId || loading}  // ✅ 로그인 전/로딩 중 입력 막기
+          disabled={!userId || loading}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
         <button onClick={sendMessage} disabled={!userId || loading}>

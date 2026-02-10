@@ -3,7 +3,7 @@ import ChatbotButton from "./ChatbotButton";
 import ChatbotWindow from "./ChatbotWindow";
 import "./Chatbot.css";
 
-function ChatbotContainer({ user }) {
+function ChatbotContainer() { // user prop 제거
   const [open, setOpen] = useState(false);
 
   return (
@@ -12,7 +12,6 @@ function ChatbotContainer({ user }) {
 
       {open && (
         <ChatbotWindow
-          user={user}                      
           onClose={() => setOpen(false)}
         />
       )}

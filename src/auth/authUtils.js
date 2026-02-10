@@ -1,4 +1,4 @@
-import { removeCookie } from '../utils/cookie';
+import { removeCookie, getCookie } from '../utils/cookie';
 
 export const logoutUser = () => {
     removeCookie('token');
@@ -13,3 +13,5 @@ export const logoutAdmin = () => {
     removeCookie('adminId');
     window.location.href = '/admin/login';
 };
+
+export { getCookie };
