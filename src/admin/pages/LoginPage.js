@@ -21,7 +21,11 @@ export default function LoginPage() {
       localStorage.setItem("adminId", data.userId);
       
       const userId = data.userId;
-      sessionStorage.setItem('tempAdminId', userId);
+      localStorage.setItem('tempAdminId', userId);
+      // Assuming the API returns a temporary access token for 2FA in `data.tempAccessToken`
+      if (data.tempAccessToken) {
+        localStorage.setItem('tempAdminToken', data.tempAccessToken);
+      }
 
       // 2. 로그인 응답 데이터(data) 내의 is2faEnabled 값으로 즉시 분기
       if (data.is2faEnabled === true) {

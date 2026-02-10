@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { setCookie } from '../../utils/cookie';
 
 const OtpVerificationPage = () => {
     const [otp, setOtp] = useState('');
@@ -30,6 +29,7 @@ const OtpVerificationPage = () => {
             if (response.headers['x-2fa-status'] === 'success' || response.data.success === true) {
                 alert("인증에 성공하였습니다.");
                 
+<<<<<<< Updated upstream
                 // LocalStorage에서 임시 값 가져오기
                 const tempAccessToken = localStorage.getItem("token");
                 const tempRefreshToken = localStorage.getItem("refreshToken");
@@ -50,6 +50,11 @@ const OtpVerificationPage = () => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
                 localStorage.removeItem("adminId");
+=======
+                // 최종 인증 토큰 localStorage 저장
+                localStorage.setItem('adminToken', response.data.accessToken);
+                localStorage.setItem('adminId', response.data.userId);
+>>>>>>> Stashed changes
                 
                 // 임시 세션 데이터 정리
                 sessionStorage.removeItem('tempAdminId');

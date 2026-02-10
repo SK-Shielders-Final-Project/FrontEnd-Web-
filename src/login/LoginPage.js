@@ -25,6 +25,7 @@ const LoginPage = () => {
 
       if (accessToken && refreshToken && userId) {
         login(accessToken, refreshToken, userId);
+        localStorage.setItem("token", accessToken);
         // navigate('/mypage/view');
       } else {
         throw new Error('로그인에 성공했지만 토큰 또는 사용자 ID를 받지 못했습니다.');
